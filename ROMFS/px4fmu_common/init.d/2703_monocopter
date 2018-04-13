@@ -53,4 +53,4 @@ param set VT_TYPE 3
 
 set MIXER THOR
 
-set PWM_OUT 1234
+set PWM_OUT 123456
