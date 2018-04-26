@@ -1,6 +1,6 @@
 #include "bmi160.hpp"
 #include "bmi160_gyro.hpp"
-
+#include <ecl/geo/geo.h>
 
 /*
   list of registers that will be checked in check_registers(). Note
@@ -655,14 +655,12 @@ BMI160::ioctl(struct file *filp, int cmd, unsigned long arg)
 					// adjust filters
 					float cutoff_freq_hz = _accel_filter_x.get_cutoff_freq();
 					float sample_rate = 1.0e6f / ticks;
-					_set_dlpf_filter(cutoff_freq_hz);
 					_accel_filter_x.set_cutoff_frequency(sample_rate, cutoff_freq_hz);
 					_accel_filter_y.set_cutoff_frequency(sample_rate, cutoff_freq_hz);
 					_accel_filter_z.set_cutoff_frequency(sample_rate, cutoff_freq_hz);
 
 
 					float cutoff_freq_hz_gyro = _gyro_filter_x.get_cutoff_freq();
-					_set_dlpf_filter(cutoff_freq_hz_gyro);
 					_gyro_filter_x.set_cutoff_frequency(sample_rate, cutoff_freq_hz_gyro);
 					_gyro_filter_y.set_cutoff_frequency(sample_rate, cutoff_freq_hz_gyro);
 					_gyro_filter_z.set_cutoff_frequency(sample_rate, cutoff_freq_hz_gyro);
@@ -743,7 +741,7 @@ BMI160::ioctl(struct file *filp, int cmd, unsigned long arg)
 		return set_accel_range(arg);
 
 	case ACCELIOCGRANGE:
-		return (unsigned long)((_accel_range_m_s2) / BMI160_ONE_G + 0.5f);
+		return (unsigned long)((_accel_range_m_s2) / CONSTANTS_ONE_G + 0.5f);
 
 	case ACCELIOCSELFTEST:
 		return accel_self_test();
@@ -905,8 +903,8 @@ BMI160::set_accel_range(unsigned max_g)
 		return -EINVAL;
 	}
 
-	_accel_range_scale = (BMI160_ONE_G / lsb_per_g);
-	_accel_range_m_s2 = max_accel_g * BMI160_ONE_G;
+	_accel_range_scale = (CONSTANTS_ONE_G / lsb_per_g);
+	_accel_range_m_s2 = max_accel_g * CONSTANTS_ONE_G;
 
 	modify_reg(BMIREG_ACC_RANGE, clearbits, setbits);
 
