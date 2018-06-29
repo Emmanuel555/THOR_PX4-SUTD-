@@ -57,4 +57,4 @@ param set VT_THOR_COLL_P 0.5
 
 set MIXER THOR
 
-set PWM_OUT 123456
+set PWM_OUT 1234
