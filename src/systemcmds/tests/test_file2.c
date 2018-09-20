@@ -54,8 +54,6 @@
 #define FLAG_FSYNC 1
 #define FLAG_LSEEK 2
 
-#define LOG_PATH PX4_STORAGEDIR
-
 /*
   return a predictable value for any file offset to allow detection of corruption
  */
@@ -69,7 +67,7 @@ static uint8_t get_value(uint32_t ofs)
 	return u.buf[ofs % 4];
 }
 
-static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t write_size, uint16_t flags)
+static void test_corruption(const char *filename, uint32_t write_chunk, uint32_t write_size, uint16_t flags)
 {
 	printf("Testing on %s with write_chunk=%u write_size=%u\n",
 	       filename, (unsigned)write_chunk, (unsigned)write_size);
@@ -79,7 +77,7 @@ static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t 
 
 	if (fd == -1) {
 		perror(filename);
-		return 1;
+		exit(1);
 	}
 
 	// create a file of size write_size, in write_chunk blocks
@@ -95,7 +93,7 @@ static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t 
 
 		if (write(fd, buffer, sizeof(buffer)) != (int)sizeof(buffer)) {
 			printf("write failed at offset %u\n", ofs);
-			return 1;
+			exit(1);
 		}
 
 		if (flags & FLAG_FSYNC) {
@@ -118,7 +116,7 @@ static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t 
 
 	if (fd == -1) {
 		perror(filename);
-		return 1;
+		exit(1);
 	}
 
 	counter = 0;
@@ -136,14 +134,14 @@ static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t 
 		if (read(fd, buffer, sizeof(buffer)) != (int)sizeof(buffer)) {
 			printf("read failed at offset %u\n", ofs);
 			close(fd);
-			return 1;
+			return;
 		}
 
 		for (uint16_t j = 0; j < write_chunk; j++) {
 			if (buffer[j] != get_value(ofs)) {
 				printf("corruption at ofs=%u got %u\n", ofs, buffer[j]);
 				close(fd);
-				return 1;
+				return;
 			}
 
 			ofs++;
@@ -158,7 +156,6 @@ static int test_corruption(const char *filename, uint32_t write_chunk, uint32_t 
 	close(fd);
 	unlink(filename);
 	printf("All OK\n");
-	return 0;
 }
 
 static void usage(void)
@@ -175,7 +172,7 @@ int test_file2(int argc, char *argv[])
 {
 	int opt;
 	uint16_t flags = 0;
-	const char *filename = LOG_PATH "/testfile2.dat";
+	const char *filename = PX4_ROOTFSDIR "/fs/microsd/testfile2.dat";
 	uint32_t write_chunk = 64;
 	uint32_t write_size = 5 * 1024;
 
@@ -217,11 +214,12 @@ int test_file2(int argc, char *argv[])
 	/* check if microSD card is mounted */
 	struct stat buffer;
 
-	if (stat(LOG_PATH, &buffer)) {
+	if (stat(PX4_ROOTFSDIR "/fs/microsd/", &buffer)) {
 		fprintf(stderr, "no microSD card mounted, aborting file test");
 		return 1;
 	}
 
-	return test_corruption(filename, write_chunk, write_size, flags);
+	test_corruption(filename, write_chunk, write_size, flags);
+	return 0;
 }
 

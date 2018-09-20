@@ -41,8 +41,7 @@ px4_add_module(
 		Utility/ControlMath.cpp
 	DEPENDS
 		controllib
-		FlightTasks
+		flight_tasks
 		git_ecl
 		ecl_geo
-		WeatherVane
 	)

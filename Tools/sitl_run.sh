@@ -2,24 +2,37 @@
 
 set -e
 
-sitl_bin="$1"
-debugger="$2"
-program="$3"
-model="$4"
-src_path="$5"
-build_path="$6"
+echo args: $@
+
+sitl_bin=$1
+rcS_dir=$2
+debugger=$3
+program=$4
+model=$5
+src_path=$6
+build_path=$7
 
 echo SITL ARGS
 
 echo sitl_bin: $sitl_bin
+echo rcS_dir: $rcS_dir
 echo debugger: $debugger
 echo program: $program
 echo model: $model
 echo src_path: $src_path
 echo build_path: $build_path
 
-rootfs="$build_path/tmp/rootfs" # this is the working directory
-mkdir -p "$rootfs"
+working_dir=`pwd`
+rootfs=$build_path/tmp/rootfs
+
+if [ "$chroot" == "1" ]
+then
+	chroot_enabled=-c
+	sudo_enabled=sudo
+else
+	chroot_enabled=""
+	sudo_enabled=""
+fi
 
 # To disable user input
 if [[ -n "$NO_PXH" ]]; then
@@ -28,23 +41,29 @@ else
 	no_pxh=""
 fi
 
-if [ "$model" != none ]; then
-	jmavsim_pid=`ps aux | grep java | grep "\-jar jmavsim_run.jar" | awk '{ print $2 }'`
-	if [ -n "$jmavsim_pid" ]
-	then
-		kill $jmavsim_pid
-	fi
-fi
-
 if [ "$model" == "" ] || [ "$model" == "none" ]
 then
 	echo "empty model, setting iris as default"
 	model="iris"
 fi
 
-if [ "$#" -lt 6 ]
+# check replay mode
+if [ "$replay_mode" == "ekf2" ]
 then
-	echo usage: sitl_run.sh sitl_bin debugger program model src_path build_path
+	model="iris_replay"
+	# create the publisher rules
+	mkdir -p $rootfs
+	publisher_rules_file="$rootfs/orb_publisher.rules"
+	cat <<EOF > "$publisher_rules_file"
+restrict_topics: sensor_combined, vehicle_gps_position, vehicle_land_detected
+module: replay
+ignore_others: false
+EOF
+fi
+
+if [ "$#" -lt 7 ]
+then
+	echo usage: sitl_run.sh rc_script rcS_dir debugger program model src_path build_path
 	echo ""
 	exit 1
 fi
@@ -55,16 +74,22 @@ pkill -x gazebo || true
 pkill -x px4 || true
 pkill -x px4_$model || true
 
-cp $src_path/Tools/posix_lldbinit $rootfs/.lldbinit
-cp $src_path/Tools/posix.gdbinit $rootfs/.gdbinit
+jmavsim_pid=`ps aux | grep java | grep Simulator | cut -d" " -f1`
+if [ -n "$jmavsim_pid" ]
+then
+	kill $jmavsim_pid
+fi
+
+cp $src_path/Tools/posix_lldbinit $working_dir/.lldbinit
+cp $src_path/Tools/posix.gdbinit $working_dir/.gdbinit
 
 SIM_PID=0
 
 if [ "$program" == "jmavsim" ] && [ ! -n "$no_sim" ]
 then
-	# Start Java simulator
 	$src_path/Tools/jmavsim_run.sh -r 500 &
 	SIM_PID=`echo $!`
+	cd ../..
 elif [ "$program" == "gazebo" ] && [ ! -n "$no_sim" ]
 then
 	if [ -x "$(command -v gazebo)" ]
@@ -93,25 +118,19 @@ then
 	fi
 fi
 
-pushd "$rootfs" >/dev/null
+cd $working_dir
 
 # Do not exit on failure now from here on because we want the complete cleanup
 set +e
 
-if [[ ${model} == test_* ]] || [[ ${model} == *_generated ]]; then
-	sitl_command="$sitl_bin $no_pxh $src_path/ROMFS/px4fmu_test -s ${src_path}/posix-configs/SITL/init/test/${model} -t $src_path/test_data"
-else
-	sitl_command="$sitl_bin $no_pxh $src_path/ROMFS/px4fmu_common -s etc/init.d-posix/rcS -t $src_path/test_data"
-fi
+sitl_command="$sudo_enabled $sitl_bin $no_pxh $chroot_enabled $src_path $src_path/${rcS_dir}/${model}"
 
 echo SITL COMMAND: $sitl_command
-
-export PX4_SIM_MODEL=${model}
-
 
 if [[ -n "$DONT_RUN" ]]
 then
     echo "Not running simulation (\$DONT_RUN is set)."
+# Start Java simulator
 elif [ "$debugger" == "lldb" ]
 then
 	lldb -- $sitl_command
@@ -137,10 +156,8 @@ then
 	echo "######################################################################"
 	read
 else
-	eval $sitl_command
+	$sitl_command
 fi
-
-popd >/dev/null
 
 if [[ -z "$DONT_RUN" ]]
 then

@@ -31,14 +31,14 @@
 #
 ############################################################################
 
-add_custom_command(OUTPUT listener_generated.cpp
-                COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_listener.py ${PX4_SOURCE_DIR} ${EXTERNAL_MODULES_LOCATION} > listener_generated.cpp
+add_custom_command(OUTPUT topic_listener.cpp
+                COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_listener.py ${PX4_SOURCE_DIR} ${EXTERNAL_MODULES_LOCATION} > topic_listener.cpp
                 DEPENDS generate_listener.py uorb_msgs
                 )
 
 add_custom_target(generate_topic_listener
 	DEPENDS
-		listener_generated.cpp
+		topic_listener.cpp
 		generate_listener.py
 		uorb_msgs
 	)
@@ -48,12 +48,8 @@ px4_add_module(
 	MAIN listener
 	STACK_MAIN 1800
 	COMPILE_FLAGS
-	INCLUDES
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${CMAKE_CURRENT_BINARY_DIR}
 	SRCS
-		listener_main.cpp
-		listener_generated.cpp
+		topic_listener.cpp
 	DEPENDS
 		generate_topic_listener
 	)

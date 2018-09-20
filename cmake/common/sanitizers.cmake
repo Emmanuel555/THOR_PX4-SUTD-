@@ -60,13 +60,6 @@ if (SANITIZE_ADDRESS)
 		-fno-optimize-sibling-calls
         )
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address" CACHE INTERNAL "" FORCE)
-        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address" CACHE INTERNAL "" FORCE)
-        set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address" CACHE INTERNAL "" FORCE)
-
-	function(sanitizer_fail_test_on_error test_name)
-            set_tests_properties(${test_name} PROPERTIES FAIL_REGULAR_EXPRESSION "ERROR: AddressSanitizer")
-            set_tests_properties(${test_name} PROPERTIES FAIL_REGULAR_EXPRESSION "ERROR: LeakSanitizer")
-        endfunction(sanitizer_fail_test_on_error)
 
 elseif(SANITIZE_MEMORY)
         message(STATUS "MemorySanitizer enabled")
@@ -75,11 +68,7 @@ elseif(SANITIZE_MEMORY)
                 -g3
                 -fsanitize=memory
         )
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory" CACHE INTERNAL "" FORCE)
-
-        function(sanitizer_fail_test_on_error test_name)
-            # TODO add right check here
-        endfunction(sanitizer_fail_test_on_error)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory" CACHE INTERNAL "" FORCE)
 
 elseif(SANITIZE_THREAD)
         message(STATUS "ThreadSanitizer enabled")
@@ -89,10 +78,6 @@ elseif(SANITIZE_THREAD)
                 -fsanitize=thread
         )
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread" CACHE INTERNAL "" FORCE)
-
-        function(sanitizer_fail_test_on_error test_name)
-            # TODO add right check here
-        endfunction(sanitizer_fail_test_on_error)
 
 elseif(SANITIZE_UNDEFINED)
         message(STATUS "UndefinedBehaviorSanitizer enabled")
@@ -127,14 +112,5 @@ elseif(SANITIZE_UNDEFINED)
 		-fno-sanitize-recover=bounds,null
         )
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined" CACHE INTERNAL "" FORCE)
-
-        function(sanitizer_fail_test_on_error test_name)
-            # TODO add right check here
-        endfunction(sanitizer_fail_test_on_error)
-else()
-
-        function(sanitizer_fail_test_on_error test_name)
-            # default: don't do anything
-        endfunction(sanitizer_fail_test_on_error)
 
 endif()

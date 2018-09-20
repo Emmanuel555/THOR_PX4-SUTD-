@@ -45,13 +45,16 @@
 #define LPS22HB_CONVERSION_INTERVAL	(1000000 / 25)	/* microseconds */
 
 LPS22HB::LPS22HB(device::Device *interface, const char *path) :
-	CDev(path),
+	CDev("LPS22HB", path),
 	_interface(interface),
 	_sample_perf(perf_alloc(PC_ELAPSED, "lps22hb_read")),
 	_comms_errors(perf_alloc(PC_COUNT, "lps22hb_comms_errors"))
 {
-	// set the interface device type
-	_interface->set_device_type(DRV_BARO_DEVTYPE_LPS22HB);
+	// set the device type from the interface
+	_device_id.devid_s.bus_type = _interface->get_device_bus_type();
+	_device_id.devid_s.bus = _interface->get_device_bus();
+	_device_id.devid_s.address = _interface->get_device_address();
+	_device_id.devid_s.devtype = DRV_BARO_DEVTYPE_LPS22HB;
 }
 
 LPS22HB::~LPS22HB()
@@ -76,7 +79,7 @@ LPS22HB::init()
 	int ret = CDev::init();
 
 	if (ret != OK) {
-		PX4_DEBUG("CDev init failed");
+		DEVICE_DEBUG("CDev init failed");
 		goto out;
 	}
 
@@ -224,7 +227,7 @@ LPS22HB::cycle()
 
 		/* perform collection */
 		if (OK != collect()) {
-			PX4_DEBUG("collection error");
+			DEVICE_DEBUG("collection error");
 			/* restart the measurement state machine */
 			start();
 			return;
@@ -251,7 +254,7 @@ LPS22HB::cycle()
 
 	/* measurement phase */
 	if (OK != measure()) {
-		PX4_DEBUG("measure error");
+		DEVICE_DEBUG("measure error");
 	}
 
 	/* next phase is collection */
@@ -316,20 +319,23 @@ LPS22HB::collect()
 	new_report.temperature = 42.5f + (TEMP_OUT / 480.0f);
 
 	/* get device ID */
-	new_report.device_id = _interface->get_device_id();
+	new_report.device_id = _device_id.devid;
 	new_report.error_count = perf_event_count(_comms_errors);
 
-	if (_baro_topic != nullptr) {
-		/* publish it */
-		orb_publish(ORB_ID(sensor_baro), _baro_topic, &new_report);
+	if (!(_pub_blocked)) {
 
-	} else {
-		bool sensor_is_onboard = !_interface->external();
-		_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &new_report, &_orb_class_instance,
-						  (sensor_is_onboard) ? ORB_PRIO_HIGH : ORB_PRIO_MAX);
+		if (_baro_topic != nullptr) {
+			/* publish it */
+			orb_publish(ORB_ID(sensor_baro), _baro_topic, &new_report);
 
-		if (_baro_topic == nullptr) {
-			PX4_ERR("advertise failed");
+		} else {
+			bool sensor_is_onboard = !_interface->external();
+			_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &new_report, &_orb_class_instance,
+							  (sensor_is_onboard) ? ORB_PRIO_HIGH : ORB_PRIO_MAX);
+
+			if (_baro_topic == nullptr) {
+				DEVICE_DEBUG("ADVERT FAIL");
+			}
 		}
 	}
 

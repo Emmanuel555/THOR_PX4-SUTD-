@@ -42,8 +42,7 @@ px4_add_module(
 		Publication.cpp
 		Subscription.cpp
 		uORB.cpp
-		uORBDeviceMaster.cpp
-		uORBDeviceNode.cpp
+		uORBDevices.cpp
 		uORBMain.cpp
 		uORBManager.cpp
 		uORBUtils.cpp

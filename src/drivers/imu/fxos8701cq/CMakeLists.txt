@@ -33,7 +33,7 @@
 px4_add_module(
 	MODULE drivers__fxos8701cq
 	MAIN fxos8701cq
-	STACK_MAIN 1500
+	STACK_MAIN 1200
 	COMPILE_FLAGS
 	SRCS
 		fxos8701cq.cpp

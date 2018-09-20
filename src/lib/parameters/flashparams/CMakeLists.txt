@@ -33,7 +33,7 @@
 
 add_library(flashparams
 	flashfs.c
-	flashparams.cpp
+	flashparams.c
 )
 add_dependencies(flashparams prebuild_targets)
 target_compile_definitions(flashparams PRIVATE -DMODULE_NAME="flashparams")

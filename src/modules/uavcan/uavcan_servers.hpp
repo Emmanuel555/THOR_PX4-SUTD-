@@ -33,8 +33,9 @@
 
 #pragma once
 
-#include <px4_config.h>
-#include "uavcan_driver.hpp"
+#include <nuttx/config.h>
+
+#include <uavcan_stm32/uavcan_stm32.hpp>
 #include <drivers/device/device.h>
 #include <perf/perf_counter.h>
 

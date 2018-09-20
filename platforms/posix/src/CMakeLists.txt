@@ -31,5 +31,4 @@
 #
 ############################################################################
 
-add_subdirectory(px4_daemon)
 add_subdirectory(px4_layer)

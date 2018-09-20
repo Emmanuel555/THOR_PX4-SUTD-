@@ -94,6 +94,9 @@ struct accel_calibration_s {
 /** get the current accel measurement range in g */
 #define ACCELIOCGRANGE		_ACCELIOC(8)
 
+/** get the result of a sensor self-test */
+#define ACCELIOCSELFTEST	_ACCELIOC(9)
+
 /** determine if hardware is external or onboard */
 #define ACCELIOCGEXTERNAL	_ACCELIOC(12)
 

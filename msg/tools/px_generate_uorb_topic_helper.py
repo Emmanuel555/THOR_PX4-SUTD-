@@ -77,8 +77,8 @@ type_printf_map = {
     'uint16': '%u',
     'uint32': '%" PRIu32 "',
     'uint64': '%" PRIu64 "',
-    'float32': '%.4f',
-    'float64': '%.6f',
+    'float32': '%.3f',
+    'float64': '%.3f',
     'bool': '%u',
     'char': '%c',
 }
@@ -117,7 +117,7 @@ def add_padding_bytes(fields, search_path):
     struct size
     returns a tuple with the struct size and padding at the end
     """
-    struct_size = 0
+    struct_size = 8 # account for the timestamp
     align_to = 8 # this is always 8, because of the 64bit timestamp
     i = 0
     padding_idx = 0
@@ -208,7 +208,7 @@ def print_field(field):
 
         else:
             for i in range(array_length):
-                print("PX4_INFO_RAW(\"\\t" + field.type + " " + field.name + "[" + str(i) + "]\");")
+                print("printf(\"\\t" + field.type + " " + field.name + "[" + str(i) + "]\");")
                 print(" print_message(message." + field.name + "[" + str(i) + "]);")
             return
 
@@ -242,20 +242,11 @@ def print_field(field):
                 field_name = "(" + field_name + " ? \"True\" : \"False\")"
 
         else:
-            print("PX4_INFO_RAW(\"\\n\\t" + field.name + "\");")
+            print("printf(\"\\n\\t" + field.name + "\");")
             print("\tprint_message(message."+ field.name + ");")
             return
 
-    if field.name == 'timestamp':
-        print("if (message.timestamp != 0) {\n\t\tPX4_INFO_RAW(\"\\t" + field.name + \
-            ": " + c_type + "  (%.6f seconds ago)\\n\", " + field_name + \
-            ", hrt_elapsed_time(&message.timestamp) / 1e6);\n\t} else {\n\t\tPX4_INFO_RAW(\"\\n\");\n\t}" )
-    elif field.name == 'device_id':
-        print("char device_id_buffer[80];")
-        print("device::Device::device_id_print_buffer(device_id_buffer, sizeof(device_id_buffer), message.device_id);")
-        print("PX4_INFO_RAW(\"\\tdevice_id: %d (%s) \\n\", message.device_id, device_id_buffer);" )
-    else:
-        print("PX4_INFO_RAW(\"\\t" + field.name + ": " + c_type + "\\n\", " + field_name + ");" )
+    print("printf(\"\\t" + field.name + ": " + c_type + "\\n\", " + field_name + ");" )
 
 
 def print_field_def(field):

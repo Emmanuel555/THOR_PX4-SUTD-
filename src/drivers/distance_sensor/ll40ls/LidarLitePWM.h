@@ -57,7 +57,7 @@
 
 
 
-class LidarLitePWM : public LidarLite, public cdev::CDev
+class LidarLitePWM : public LidarLite, public device::CDev
 {
 public:
 	LidarLitePWM(const char *path, uint8_t rotation = distance_sensor_s::ROTATION_DOWNWARD_FACING);

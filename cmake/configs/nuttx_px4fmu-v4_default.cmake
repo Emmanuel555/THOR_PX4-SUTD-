@@ -18,7 +18,6 @@ set(config_module_list
 	drivers/blinkm
 	drivers/camera_trigger
 	drivers/gps
-	drivers/heater
 	drivers/irlock
 	drivers/mkblctrl
 	drivers/oreoled

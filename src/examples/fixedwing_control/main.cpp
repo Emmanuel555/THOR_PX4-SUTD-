@@ -450,6 +450,7 @@ usage(const char *reason)
 	}
 
 	fprintf(stderr, "usage: ex_fixedwing_control {start|stop|status}\n\n");
+	exit(1);
 }
 
 /**
@@ -464,7 +465,6 @@ int ex_fixedwing_control_main(int argc, char *argv[])
 {
 	if (argc < 2) {
 		usage("missing command");
-		return 1;
 	}
 
 	if (!strcmp(argv[1], "start")) {
@@ -472,7 +472,7 @@ int ex_fixedwing_control_main(int argc, char *argv[])
 		if (thread_running) {
 			printf("ex_fixedwing_control already running\n");
 			/* this is not an error */
-			return 0;
+			exit(0);
 		}
 
 		thread_should_exit = false;
@@ -483,12 +483,12 @@ int ex_fixedwing_control_main(int argc, char *argv[])
 						 fixedwing_control_thread_main,
 						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
 		thread_running = true;
-		return 0;
+		exit(0);
 	}
 
 	if (!strcmp(argv[1], "stop")) {
 		thread_should_exit = true;
-		return 0;
+		exit(0);
 	}
 
 	if (!strcmp(argv[1], "status")) {
@@ -499,9 +499,9 @@ int ex_fixedwing_control_main(int argc, char *argv[])
 			printf("\tex_fixedwing_control not started\n");
 		}
 
-		return 0;
+		exit(0);
 	}
 
 	usage("unrecognized command");
-	return 0;
+	exit(1);
 }

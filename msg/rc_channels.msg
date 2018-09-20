@@ -1,5 +1,3 @@
-uint64 timestamp						# time since system start (microseconds)
-
 uint8 RC_CHANNELS_FUNCTION_THROTTLE=0
 uint8 RC_CHANNELS_FUNCTION_ROLL=1
 uint8 RC_CHANNELS_FUNCTION_PITCH=2

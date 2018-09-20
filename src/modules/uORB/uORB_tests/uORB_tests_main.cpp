@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 #include <string.h>
-#include "../uORBDeviceNode.hpp"
+#include "../uORBDevices.hpp"
 #include "../uORB.h"
 #include "../uORBCommon.hpp"
 

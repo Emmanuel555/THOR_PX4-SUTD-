@@ -115,18 +115,23 @@ void
 px4_systemreset(bool to_bootloader)
 {
 	PX4_WARN("Called px4_system_reset");
-	system_exit(0);
+	exit(0);
 }
 
 px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int stack_size, px4_main_t entry,
 			      char *const argv[])
 {
 
-	int i;
+	int rv;
 	int argc = 0;
+	int i;
 	unsigned int len = 0;
-	struct sched_param param = {};
+	unsigned long offset;
+	unsigned long structsize;
 	char *p = (char *)argv;
+
+	pthread_attr_t attr;
+	struct sched_param param = {};
 
 	// Calculate argc
 	while (p != (char *)nullptr) {
@@ -140,12 +145,12 @@ px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int
 		len += strlen(p) + 1;
 	}
 
-	unsigned long structsize = sizeof(pthdata_t) + (argc + 1) * sizeof(char *);
+	structsize = sizeof(pthdata_t) + (argc + 1) * sizeof(char *);
 
 	// not safe to pass stack data to the thread creation
 	pthdata_t *taskdata = (pthdata_t *)malloc(structsize + len);
 	memset(taskdata, 0, structsize + len);
-	unsigned long offset = ((unsigned long)taskdata) + structsize;
+	offset = ((unsigned long)taskdata) + structsize;
 
 	strncpy(taskdata->name, name, 16);
 	taskdata->name[15] = 0;
@@ -164,8 +169,7 @@ px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int
 
 	PX4_DEBUG("starting task %s", name);
 
-	pthread_attr_t attr;
-	int rv = pthread_attr_init(&attr);
+	rv = pthread_attr_init(&attr);
 
 	if (rv != 0) {
 		PX4_ERR("px4_task_spawn_cmd: failed to init thread attrs");
@@ -226,10 +230,10 @@ px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int
 
 	pthread_mutex_lock(&task_mutex);
 
-	px4_task_t taskid = 0;
+	int taskid = 0;
 
 	for (i = 0; i < PX4_MAX_TASKS; ++i) {
-		if (!taskmap[i].isused) {
+		if (taskmap[i].isused == false) {
 			taskmap[i].name = name;
 			taskmap[i].isused = true;
 			taskid = i;
@@ -272,7 +276,7 @@ px4_task_t px4_task_spawn_cmd(const char *name, int scheduler, int priority, int
 	pthread_attr_destroy(&attr);
 	pthread_mutex_unlock(&task_mutex);
 
-	return taskid;
+	return i;
 }
 
 int px4_task_delete(px4_task_t id)

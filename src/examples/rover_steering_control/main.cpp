@@ -395,6 +395,7 @@ usage(const char *reason)
 	}
 
 	fprintf(stderr, "usage: rover_steering_control {start|stop|status}\n\n");
+	exit(1);
 }
 
 /**
@@ -409,7 +410,6 @@ int rover_steering_control_main(int argc, char *argv[])
 {
 	if (argc < 2) {
 		usage("missing command");
-		return 1;
 	}
 
 	if (!strcmp(argv[1], "start")) {
@@ -417,7 +417,7 @@ int rover_steering_control_main(int argc, char *argv[])
 		if (thread_running) {
 			warnx("running");
 			/* this is not an error */
-			return 0;
+			exit(0);
 		}
 
 		thread_should_exit = false;
@@ -428,12 +428,12 @@ int rover_steering_control_main(int argc, char *argv[])
 						 rover_steering_control_thread_main,
 						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
 		thread_running = true;
-		return 0;
+		exit(0);
 	}
 
 	if (!strcmp(argv[1], "stop")) {
 		thread_should_exit = true;
-		return 0;
+		exit(0);
 	}
 
 	if (!strcmp(argv[1], "status")) {
@@ -444,11 +444,11 @@ int rover_steering_control_main(int argc, char *argv[])
 			warnx("not started");
 		}
 
-		return 0;
+		exit(0);
 	}
 
 	usage("unrecognized command");
-	return 1;
+	exit(1);
 }
 
 

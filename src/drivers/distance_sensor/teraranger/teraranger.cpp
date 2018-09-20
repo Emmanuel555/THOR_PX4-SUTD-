@@ -119,7 +119,7 @@ private:
 	uint8_t _rotation;
 	float				_min_distance;
 	float				_max_distance;
-	work_s				_work{};
+	work_s				_work;
 	ringbuffer::RingBuffer		*_reports;
 	bool				_sensor_ok;
 	uint8_t				_valid;
@@ -244,6 +244,12 @@ TERARANGER::TERARANGER(uint8_t rotation, int bus, int address) :
 {
 	// up the retries since the device misses the first measure attempts
 	I2C::_retries = 3;
+
+	// enable debug() calls
+	_debug_enabled = false;
+
+	// work_cancel in the dtor will explode if we don't do this...
+	memset(&_work, 0, sizeof(_work));
 }
 
 TERARANGER::~TERARANGER()
@@ -274,7 +280,7 @@ TERARANGER::init()
 
 	switch (hw_model) {
 	case 0: /* Disabled */
-		PX4_WARN("Disabled");
+		DEVICE_LOG("Disabled");
 		return ret;
 
 	case 1: /* Autodetect */
@@ -335,7 +341,7 @@ TERARANGER::init()
 		break;
 
 	default:
-		PX4_ERR("invalid HW model %d.", hw_model);
+		DEVICE_LOG("invalid HW model %d.", hw_model);
 		return ret;
 	}
 
@@ -358,7 +364,7 @@ TERARANGER::init()
 					 &_orb_class_instance, ORB_PRIO_LOW);
 
 		if (_distance_sensor_topic == nullptr) {
-			PX4_ERR("failed to create distance_sensor object");
+			DEVICE_LOG("failed to create distance_sensor object. Did you start uOrb?");
 		}
 	}
 
@@ -383,9 +389,9 @@ TERARANGER::probe()
 		}
 	}
 
-	PX4_DEBUG("WHO_AM_I byte mismatch 0x%02x should be 0x%02x\n",
-		  (unsigned)who_am_i,
-		  TERARANGER_WHO_AM_I_REG_VAL);
+	DEVICE_DEBUG("WHO_AM_I byte mismatch 0x%02x should be 0x%02x\n",
+		     (unsigned)who_am_i,
+		     TERARANGER_WHO_AM_I_REG_VAL);
 
 	// not found on any address
 	return -EIO;
@@ -587,7 +593,7 @@ TERARANGER::measure()
 
 	if (OK != ret) {
 		perf_count(_comms_errors);
-		PX4_DEBUG("i2c::transfer returned %d", ret);
+		DEVICE_LOG("i2c::transfer returned %d", ret);
 		return ret;
 	}
 
@@ -609,7 +615,7 @@ TERARANGER::collect()
 	ret = transfer(nullptr, 0, &val[0], 3);
 
 	if (ret < 0) {
-		PX4_DEBUG("error reading from sensor: %d", ret);
+		DEVICE_LOG("error reading from sensor: %d", ret);
 		perf_count(_comms_errors);
 		perf_end(_sample_perf);
 		return ret;
@@ -684,7 +690,7 @@ TERARANGER::cycle()
 
 		/* perform collection */
 		if (OK != collect()) {
-			PX4_DEBUG("collection error");
+			DEVICE_LOG("collection error");
 			/* restart the measurement state machine */
 			start();
 			return;
@@ -710,7 +716,7 @@ TERARANGER::cycle()
 
 	/* measurement phase */
 	if (OK != measure()) {
-		PX4_DEBUG("measure error");
+		DEVICE_LOG("measure error");
 	}
 
 	/* next phase is collection */

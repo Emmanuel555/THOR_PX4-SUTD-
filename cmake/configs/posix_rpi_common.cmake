@@ -39,7 +39,6 @@ set(config_module_list
 	systemcmds/ver
 	systemcmds/esc_calib
 	systemcmds/reboot
-	systemcmds/shutdown
 	systemcmds/topic_listener
 	systemcmds/tune_control
 	systemcmds/perf

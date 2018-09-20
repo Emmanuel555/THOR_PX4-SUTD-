@@ -66,10 +66,9 @@ int BlockLocalPositionEstimator::sonarMeasure(Vector<float, n_y_sonar> &y)
 	_sonarStats.update(Scalarf(d));
 	_time_last_sonar = _timeStamp;
 	y.setZero();
-	matrix::Eulerf euler(matrix::Quatf(_sub_att.get().q));
 	y(0) = (d + _sonar_z_offset.get()) *
-	       cosf(euler.phi()) *
-	       cosf(euler.theta());
+	       cosf(_eul(0)) *
+	       cosf(_eul(1));
 	return OK;
 }
 

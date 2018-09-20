@@ -614,7 +614,6 @@ void Logger::add_default_topics()
 	add_topic("cpuload");
 	add_topic("distance_sensor", 100);
 	add_topic("ekf2_innovations", 200);
-	add_topic("ekf_gps_drift");
 	add_topic("esc_status", 250);
 	add_topic("estimator_status", 200);
 	add_topic("home_position");
@@ -625,13 +624,11 @@ void Logger::add_default_topics()
 	add_topic("mission_result");
 	add_topic("optical_flow", 50);
 	add_topic("position_setpoint_triplet", 200);
-	add_topic("radio_status");
 	add_topic("rate_ctrl_status", 30);
 	add_topic("sensor_combined", 100);
 	add_topic("sensor_preflight", 200);
 	add_topic("system_power", 500);
 	add_topic("tecs_status", 200);
-	add_topic("telemetry_status");
 	add_topic("vehicle_attitude", 30);
 	add_topic("vehicle_attitude_setpoint", 100);
 	add_topic("vehicle_command");
@@ -643,8 +640,8 @@ void Logger::add_default_topics()
 	add_topic("vehicle_rates_setpoint", 30);
 	add_topic("vehicle_status", 200);
 	add_topic("vehicle_status_flags");
-	add_topic("vehicle_trajectory_waypoint", 200);
-	add_topic("vehicle_trajectory_waypoint_desired", 200);
+	add_topic("vehicle_trajectory_waypoint");
+	add_topic("vehicle_trajectory_waypoint_desired");
 	add_topic("vehicle_vision_attitude");
 	add_topic("vehicle_vision_position");
 	add_topic("vtol_vehicle_status", 200);
@@ -655,11 +652,10 @@ void Logger::add_default_topics()
 	add_topic("actuator_controls_virtual_fw");
 	add_topic("actuator_controls_virtual_mc");
 	add_topic("commander_state");
+	add_topic("fw_pos_ctrl_status");
 	add_topic("fw_virtual_attitude_setpoint");
 	add_topic("mc_virtual_attitude_setpoint");
 	add_topic("multirotor_motor_limits");
-	add_topic("position_controller_status");
-	add_topic("position_controller_landingstatus");
 	add_topic("offboard_control_mode");
 	add_topic("time_offset");
 	add_topic("vehicle_attitude_groundtruth", 10);
@@ -833,8 +829,7 @@ void Logger::run()
 	int log_message_sub = orb_subscribe(ORB_ID(log_message));
 	orb_set_interval(log_message_sub, 20);
 
-
-	int ntopics = add_topics_from_file(PX4_STORAGEDIR "/etc/logging/logger_topics.txt");
+	int ntopics = add_topics_from_file(PX4_ROOTFSDIR "/fs/microsd/etc/logging/logger_topics.txt");
 
 	if (ntopics > 0) {
 		PX4_INFO("logging %d topics from logger_topics.txt", ntopics);
