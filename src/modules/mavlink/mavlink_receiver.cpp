@@ -159,6 +159,7 @@ MavlinkReceiver::MavlinkReceiver(Mavlink *parent) :
 	_debug_key_value_pub(nullptr),
 	_debug_value_pub(nullptr),
 	_debug_vect_pub(nullptr),
+	_debug_array_pub(nullptr),
 	_gps_inject_data_pub(nullptr),
 	_command_ack_pub(nullptr),
 	_control_mode_sub(orb_subscribe(ORB_ID(vehicle_control_mode))),
@@ -341,6 +342,10 @@ MavlinkReceiver::handle_message(mavlink_message_t *msg)
 
 	case MAVLINK_MSG_ID_DEBUG_VECT:
 		handle_message_debug_vect(msg);
+		break;
+
+	case MAVLINK_MSG_ID_DEBUG_FLOAT_ARRAY:
+		handle_message_debug_float_array(msg);
 		break;
 
 	default:
@@ -1821,51 +1826,43 @@ MavlinkReceiver::handle_message_rc_channels_override(mavlink_message_t *msg)
 		return;
 	}
 
-	struct rc_input_values rc = {};
-
+	// fill uORB message
+	struct input_rc_s rc = {};
+	// metadata
 	rc.timestamp = hrt_absolute_time();
-
 	rc.timestamp_last_signal = rc.timestamp;
-
-	rc.channel_count = 8;
-
-	rc.rc_failsafe = false;
-
-	rc.rc_lost = false;
-
-	rc.rc_lost_frame_count = 0;
-
-	rc.rc_total_frame_count = 1;
-
-	rc.rc_ppm_frame_length = 0;
-
-	rc.input_source = input_rc_s::RC_INPUT_SOURCE_MAVLINK;
-
+	rc.channel_count = 18;
 	rc.rssi = RC_INPUT_RSSI_MAX;
-
-	/* channels */
+	rc.rc_failsafe = false;
+	rc.rc_lost = false;
+	rc.rc_lost_frame_count = 0;
+	rc.rc_total_frame_count = 1;
+	rc.rc_ppm_frame_length = 0;
+	rc.input_source = input_rc_s::RC_INPUT_SOURCE_MAVLINK;
+	// channels
 	rc.values[0] = man.chan1_raw;
-
 	rc.values[1] = man.chan2_raw;
-
 	rc.values[2] = man.chan3_raw;
-
 	rc.values[3] = man.chan4_raw;
-
 	rc.values[4] = man.chan5_raw;
-
 	rc.values[5] = man.chan6_raw;
-
 	rc.values[6] = man.chan7_raw;
-
 	rc.values[7] = man.chan8_raw;
+	rc.values[8] = man.chan9_raw;
+	rc.values[9] = man.chan10_raw;
+	rc.values[10] = man.chan11_raw;
+	rc.values[11] = man.chan12_raw;
+	rc.values[12] = man.chan13_raw;
+	rc.values[13] = man.chan14_raw;
+	rc.values[14] = man.chan15_raw;
+	rc.values[15] = man.chan16_raw;
+	rc.values[16] = man.chan17_raw;
+	rc.values[17] = man.chan18_raw;
 
-	if (_rc_pub == nullptr) {
-		_rc_pub = orb_advertise(ORB_ID(input_rc), &rc);
-
-	} else {
-		orb_publish(ORB_ID(input_rc), _rc_pub, &rc);
-	}
+	// publish uORB message
+	int instance; // provides the instance ID or the publication
+	ORB_PRIO priority = ORB_PRIO_HIGH; // since it is an override, set priority high
+	orb_publish_auto(ORB_ID(input_rc), &_rc_pub, &rc, &instance, priority);
 }
 
 void
@@ -1881,7 +1878,7 @@ MavlinkReceiver::handle_message_manual_control(mavlink_message_t *msg)
 
 	if (_mavlink->get_manual_input_mode_generation()) {
 
-		struct rc_input_values rc = {};
+		struct input_rc_s rc = {};
 		rc.timestamp = hrt_absolute_time();
 		rc.timestamp_last_signal = rc.timestamp;
 
@@ -2567,6 +2564,30 @@ void MavlinkReceiver::handle_message_debug_vect(mavlink_message_t *msg)
 
 	} else {
 		orb_publish(ORB_ID(debug_vect), _debug_vect_pub, &debug_topic);
+	}
+}
+
+void MavlinkReceiver::handle_message_debug_float_array(mavlink_message_t *msg)
+{
+	mavlink_debug_float_array_t debug_msg;
+	debug_array_s debug_topic = {};
+
+	mavlink_msg_debug_float_array_decode(msg, &debug_msg);
+
+	debug_topic.timestamp = hrt_absolute_time();
+	debug_topic.id = debug_msg.array_id;
+	memcpy(debug_topic.name, debug_msg.name, sizeof(debug_topic.name));
+	debug_topic.name[sizeof(debug_topic.name) - 1] = '\0'; // enforce null termination
+
+	for (size_t i = 0; i < debug_array_s::ARRAY_SIZE; i++) {
+		debug_topic.data[i] = debug_msg.data[i];
+	}
+
+	if (_debug_array_pub == nullptr) {
+		_debug_array_pub = orb_advertise(ORB_ID(debug_array), &debug_topic);
+
+	} else {
+		orb_publish(ORB_ID(debug_array), _debug_array_pub, &debug_topic);
 	}
 }
 
