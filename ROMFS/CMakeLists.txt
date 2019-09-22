@@ -80,13 +80,15 @@ if (px4_constrained_flash_build)
 endif()
 add_custom_command(OUTPUT ${romfs_gen_root_dir}/init.d/rcS ${romfs_gen_root_dir}/init.d/rc.serial ${romfs_gen_root_dir}/init.d/rc.autostart
 	COMMAND ${CMAKE_COMMAND} -E remove_directory ${romfs_gen_root_dir}
-	# TODO: we should only copy the files in ${romfs_copy_files}
 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${romfs_src_dir} ${romfs_gen_root_dir}
+<<<<<<< HEAD
 	COMMAND ${CMAKE_COMMAND} -E remove_directory ${romfs_gen_root_dir}/init.d-posix
 	COMMAND ${CMAKE_COMMAND} -E remove_directory ${romfs_gen_root_dir}/mixers-sitl
 	COMMAND ${CMAKE_COMMAND} -E remove ${romfs_gen_root_dir}/mixers/CMakeLists.txt
 	COMMAND ${CMAKE_COMMAND} -E remove ${romfs_gen_root_dir}/init.d/CMakeLists.txt
 	COMMAND ${CMAKE_COMMAND} -E remove ${romfs_gen_root_dir}/init.d/airframes/CMakeLists.txt
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	COMMAND ${PYTHON_EXECUTABLE} ${PX4_SOURCE_DIR}/Tools/px_process_airframes.py
 		--airframes-path ${romfs_gen_root_dir}/init.d
 		--start-script ${romfs_gen_root_dir}/init.d/rc.autostart
@@ -116,6 +118,7 @@ if(config_io_board)
 		)
 endif()
 
+<<<<<<< HEAD
 
 if(config_bl_file)
 	file(MAKE_DIRECTORY ${PX4_BINARY_DIR}/romfs_extras)
@@ -140,9 +143,10 @@ if(EXISTS "${PX4_BOARD_DIR}/init/rc.board")
 		)
 endif()
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 add_custom_command(OUTPUT romfs_extras.stamp
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${romfs_gen_root_dir}/extras/
-	COMMAND ${CMAKE_COMMAND} -E make_directory ${PX4_BINARY_DIR}/romfs_extras/
 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${PX4_BINARY_DIR}/romfs_extras/ ${romfs_gen_root_dir}/extras/
 	COMMAND ${CMAKE_COMMAND} -E touch romfs_extras.stamp
 	DEPENDS
@@ -191,6 +195,7 @@ add_custom_command(OUTPUT nsh_romfsimg.c
 add_library(romfs STATIC nsh_romfsimg.c)
 add_dependencies(romfs prebuild_targets)
 set_target_properties(romfs PROPERTIES LINKER_LANGUAGE C)
+<<<<<<< HEAD
 
 
 # shellcheck
@@ -212,3 +217,5 @@ if(SHELLCHECK_PATH)
 		USES_TERMINAL
     )
 endif()
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

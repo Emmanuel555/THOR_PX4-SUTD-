@@ -312,6 +312,13 @@ private:
 	float			meas_to_float(uint8_t in[2]);
 
 	/**
+	 * Check the current calibration and update device status
+	 *
+	 * @return 0 if calibration is ok, 1 else
+	 */
+	int 			check_calibration();
+
+	/**
 	* Check the current scale calibration
 	*
 	* @return 0 if scale calibration is ok, 1 else
@@ -672,6 +679,8 @@ HMC5883::ioctl(struct file *filp, int cmd, unsigned long arg)
 	case MAGIOCSSCALE:
 		/* set new scale factors */
 		memcpy(&_scale, (struct mag_calibration_s *)arg, sizeof(_scale));
+		/* check calibration, but not actually return an error */
+		(void)check_calibration();
 		return 0;
 
 	case MAGIOCGSCALE:
@@ -684,6 +693,9 @@ HMC5883::ioctl(struct file *filp, int cmd, unsigned long arg)
 
 	case MAGIOCEXSTRAP:
 		return set_excitement(arg);
+
+	case MAGIOCSELFTEST:
+		return check_calibration();
 
 	case MAGIOCGEXTERNAL:
 		DEVICE_DEBUG("MAGIOCGEXTERNAL in main driver");
@@ -1212,6 +1224,19 @@ int HMC5883::check_offset()
 
 	/* return 0 if calibrated, 1 else */
 	return !offset_valid;
+}
+
+int HMC5883::check_calibration()
+{
+	bool offset_valid = (check_offset() == OK);
+	bool scale_valid  = (check_scale() == OK);
+
+	if (_calibrated != (offset_valid && scale_valid)) {
+		_calibrated = (offset_valid && scale_valid);
+	}
+
+	/* return 0 if calibrated, 1 else */
+	return (!_calibrated);
 }
 
 int HMC5883::set_excitement(unsigned enable)

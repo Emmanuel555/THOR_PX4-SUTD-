@@ -41,6 +41,9 @@
  * @author Julian Oes <julian@px4.io>
  */
 
+#include <px4_config.h>
+#include <parameters/param.h>
+
 /**
  * Roll trim
  *
@@ -278,17 +281,18 @@ PARAM_DEFINE_INT32(COM_RC_ARM_HYST, 1000);
  * automatically disarmed in case a landing situation has been detected during this period.
  *
  * The vehicle will also auto-disarm right after arming if it has not even flown, however the time
- * will always be 10 seconds such that the pilot has enough time to take off.
+ * will be longer by a factor of 5.
  *
- * A negative value means that automatic disarming triggered by landing detection is disabled.
+ * A value of zero means that automatic disarming is disabled.
  *
  * @group Commander
- * @min -1
+ * @min 0
  * @max 20
  * @unit s
- * @decimal 2
+ * @decimal 0
+ * @increment 1
  */
-PARAM_DEFINE_FLOAT(COM_DISARM_LAND, -1.0f);
+PARAM_DEFINE_INT32(COM_DISARM_LAND, 0);
 
 /**
  * Allow arming without GPS

@@ -150,7 +150,7 @@ MS5611_SPI::init()
 	ret = SPI::init();
 
 	if (ret != OK) {
-		PX4_DEBUG("SPI init failed");
+		DEVICE_DEBUG("SPI init failed");
 		goto out;
 	}
 
@@ -158,7 +158,7 @@ MS5611_SPI::init()
 	ret = _reset();
 
 	if (ret != OK) {
-		PX4_DEBUG("reset failed");
+		DEVICE_DEBUG("reset failed");
 		goto out;
 	}
 
@@ -166,7 +166,7 @@ MS5611_SPI::init()
 	ret = _read_prom();
 
 	if (ret != OK) {
-		PX4_DEBUG("prom readout failed");
+		DEVICE_DEBUG("prom readout failed");
 		goto out;
 	}
 
@@ -262,18 +262,18 @@ MS5611_SPI::_read_prom()
 			all_zero = false;
 		}
 
-		//PX4_DEBUG("prom[%u]=0x%x", (unsigned)i, (unsigned)_prom.c[i]);
+		//DEVICE_DEBUG("prom[%u]=0x%x", (unsigned)i, (unsigned)_prom.c[i]);
 	}
 
 	/* calculate CRC and return success/failure accordingly */
 	int ret = ms5611::crc4(&_prom.c[0]) ? OK : -EIO;
 
 	if (ret != OK) {
-		PX4_DEBUG("crc failed");
+		DEVICE_DEBUG("crc failed");
 	}
 
 	if (all_zero) {
-		PX4_DEBUG("prom all zero");
+		DEVICE_DEBUG("prom all zero");
 		ret = -EIO;
 	}
 

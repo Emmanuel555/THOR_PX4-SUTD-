@@ -92,19 +92,27 @@ int px4_mavlink_debug_main(int argc, char *argv[])
 
 		/* send one named value */
 		dbg_key.value = value_counter;
+<<<<<<< HEAD:src/examples/px4_mavlink_debug/px4_mavlink_debug.cpp
 		dbg_key.timestamp = timestamp_us;
+=======
+		dbg_key.timestamp_ms = timestamp_ms;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/examples/px4_mavlink_debug/px4_mavlink_debug.c
 		orb_publish(ORB_ID(debug_key_value), pub_dbg_key, &dbg_key);
 
 		/* send one indexed value */
 		dbg_ind.value = 0.5f * value_counter;
+<<<<<<< HEAD:src/examples/px4_mavlink_debug/px4_mavlink_debug.cpp
 		dbg_ind.timestamp = timestamp_us;
+=======
+		dbg_ind.timestamp_ms = timestamp_ms;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/examples/px4_mavlink_debug/px4_mavlink_debug.c
 		orb_publish(ORB_ID(debug_value), pub_dbg_ind, &dbg_ind);
 
 		/* send one vector */
 		dbg_vect.x = 1.0f * value_counter;
 		dbg_vect.y = 2.0f * value_counter;
 		dbg_vect.z = 3.0f * value_counter;
-		dbg_vect.timestamp = timestamp_us;
+		dbg_vect.timestamp_us = timestamp_us;
 		orb_publish(ORB_ID(debug_vect), pub_dbg_vect, &dbg_vect);
 
 		/* send one array */

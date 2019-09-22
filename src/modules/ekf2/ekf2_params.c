@@ -157,9 +157,9 @@ PARAM_DEFINE_FLOAT(EKF2_AVEL_DELAY, 5);
  * 2 : Maximum allowed horizontal position error set by EKF2_REQ_EPH
  * 3 : Maximum allowed vertical position error set by EKF2_REQ_EPV
  * 4 : Maximum allowed speed error set by EKF2_REQ_SACC
- * 5 : Maximum allowed horizontal position rate set by EKF2_REQ_HDRIFT. This check will only run when the vehicle is on ground and stationary. Detecton of the stationary condition is controlled by the EKF2_MOVE_TEST parameter.
- * 6 : Maximum allowed vertical position rate set by EKF2_REQ_VDRIFT. This check will only run when the vehicle is on ground and stationary. Detecton of the stationary condition is controlled by the EKF2_MOVE_TEST parameter.
- * 7 : Maximum allowed horizontal speed set by EKF2_REQ_HDRIFT. This check will only run when the vehicle is on ground and stationary. Detecton of the stationary condition is controlled by the EKF2_MOVE_TEST parameter.
+ * 5 : Maximum allowed horizontal position rate set by EKF2_REQ_HDRIFT. This check can only be used if the vehicle is stationary during alignment.
+ * 6 : Maximum allowed vertical position rate set by EKF2_REQ_VDRIFT. This check can only be used if the vehicle is stationary during alignment.
+ * 7 : Maximum allowed horizontal speed set by EKF2_REQ_HDRIFT. This check can only be used if the vehicle is stationary during alignment.
  * 8 : Maximum allowed vertical velocity discrepancy set by EKF2_REQ_VDRIFT
  *
  * @group EKF2
@@ -175,7 +175,7 @@ PARAM_DEFINE_FLOAT(EKF2_AVEL_DELAY, 5);
  * @bit 7 Max horizontal speed (EKF2_REQ_HDRIFT)
  * @bit 8 Max vertical velocity discrepancy (EKF2_REQ_VDRIFT)
  */
-PARAM_DEFINE_INT32(EKF2_GPS_CHECK, 245);
+PARAM_DEFINE_INT32(EKF2_GPS_CHECK, 21);
 
 /**
  * Required EPH to use GPS.
@@ -186,7 +186,7 @@ PARAM_DEFINE_INT32(EKF2_GPS_CHECK, 245);
  * @unit m
  * @decimal 1
  */
-PARAM_DEFINE_FLOAT(EKF2_REQ_EPH, 3.0f);
+PARAM_DEFINE_FLOAT(EKF2_REQ_EPH, 5.0f);
 
 /**
  * Required EPV to use GPS.
@@ -197,7 +197,7 @@ PARAM_DEFINE_FLOAT(EKF2_REQ_EPH, 3.0f);
  * @unit m
  * @decimal 1
  */
-PARAM_DEFINE_FLOAT(EKF2_REQ_EPV, 5.0f);
+PARAM_DEFINE_FLOAT(EKF2_REQ_EPV, 8.0f);
 
 /**
  * Required speed accuracy to use GPS.
@@ -208,7 +208,7 @@ PARAM_DEFINE_FLOAT(EKF2_REQ_EPV, 5.0f);
  * @unit m/s
  * @decimal 2
  */
-PARAM_DEFINE_FLOAT(EKF2_REQ_SACC, 0.5f);
+PARAM_DEFINE_FLOAT(EKF2_REQ_SACC, 1.0f);
 
 /**
  * Required satellite count to use GPS.
@@ -238,7 +238,7 @@ PARAM_DEFINE_FLOAT(EKF2_REQ_GDOP, 2.5f);
  * @unit m/s
  * @decimal 2
  */
-PARAM_DEFINE_FLOAT(EKF2_REQ_HDRIFT, 0.1f);
+PARAM_DEFINE_FLOAT(EKF2_REQ_HDRIFT, 0.3f);
 
 /**
  * Maximum vertical drift speed to use GPS.
@@ -249,7 +249,7 @@ PARAM_DEFINE_FLOAT(EKF2_REQ_HDRIFT, 0.1f);
  * @decimal 2
  * @unit m/s
  */
-PARAM_DEFINE_FLOAT(EKF2_REQ_VDRIFT, 0.2f);
+PARAM_DEFINE_FLOAT(EKF2_REQ_VDRIFT, 0.5f);
 
 /**
  * Rate gyro noise for covariance prediction.
@@ -433,7 +433,6 @@ PARAM_DEFINE_FLOAT(EKF2_BETA_NOISE, 0.3f);
  *
  * @group EKF2
  * @volatile
- * @category system
  * @unit deg
  * @decimal 1
  */
@@ -489,8 +488,13 @@ PARAM_DEFINE_INT32(EKF2_DECL_TYPE, 7);
  * If set to 'Magnetic heading' magnetic heading fusion is used at all times
  * If set to '3-axis' 3-axis field fusion is used at all times.
  * If set to 'VTOL custom' the behaviour is the same as 'Automatic', but if fusing airspeed, magnetometer fusion is only allowed to modify the magnetic field states. This can be used by VTOL platforms with large magnetic field disturbances to prevent incorrect bias states being learned during forward flight operation which can adversely affect estimation accuracy after transition to hovering flight.
+<<<<<<< HEAD
  * If set to 'MC custom' the behaviour is the same as 'Automatic, but if there are no earth frame position or velocity observations being used, the magnetometer will not be used. This enables vehicles to operate with no GPS in environments where the magnetic field cannot be used to provide a heading reference. Prior to flight, the yaw angle is assumed to be constant if movement tests controlled by the EKF2_MOVE_TEST parameter indicate that the vehicle is static. This allows the vehicle to be placed on the ground to learn the yaw gyro bias prior to flight.
  * If set to 'None' the magnetometer will not be used under any circumstance. Other sources of yaw may be used if selected via the EKF2_AID_MASK parameter.
+=======
+ * If set to 'MC custom' the behaviour is the same as 'Automatic, but if there are no earth frame position or velocity observations being used, the magnetometer will not be used. This enables vehicles to operate with no GPS in environments where the magnetic field cannot be used to provide a heading reference.
+ *
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
  * @group EKF2
  * @value 0 Automatic
  * @value 1 Magnetic heading
@@ -1304,15 +1308,3 @@ PARAM_DEFINE_INT32(EKF2_GPS_MASK, 0);
  * @decimal 1
  */
 PARAM_DEFINE_FLOAT(EKF2_GPS_TAU, 10.0f);
-
-/**
- * Vehicle movement test threshold
- *
- * Scales the threshold tests applied to IMU data used to determine if the vehicle is static or moving. See parameter descriptions for EKF2_GPS_CHECK and EKF2_MAG_TYPE for further information on the functionality affected by this parameter.
- *
- * @group EKF2
- * @min 0.1
- * @max 10.0
- * @decimal 1
- */
-PARAM_DEFINE_FLOAT(EKF2_MOVE_TEST, 1.0f);

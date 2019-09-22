@@ -169,7 +169,6 @@ pwm_main(int argc, char *argv[])
 	bool oneshot = false;
 	int ch;
 	int ret;
-	int rv = 1;
 	char *ep;
 	uint32_t set_mask = 0;
 	unsigned group;
@@ -406,10 +405,6 @@ pwm_main(int argc, char *argv[])
 			return 1;
 		}
 
-		if (pwm_value < 0) {
-			return 0;
-		}
-
 		if (pwm_value == 0) {
 			usage("min: no PWM value provided");
 			return 1;
@@ -460,10 +455,6 @@ pwm_main(int argc, char *argv[])
 		if (set_mask == 0) {
 			usage("no channels set");
 			return 1;
-		}
-
-		if (pwm_value < 0) {
-			return 0;
 		}
 
 		if (pwm_value == 0) {
@@ -573,10 +564,6 @@ pwm_main(int argc, char *argv[])
 			return 1;
 		}
 
-		if (pwm_value < 0) {
-			return 0;
-		}
-
 		if (pwm_value == 0) {
 			usage("failsafe: no PWM provided");
 			return 1;
@@ -655,11 +642,6 @@ pwm_main(int argc, char *argv[])
 		fds.fd = 0; /* stdin */
 		fds.events = POLLIN;
 
-		if (::ioctl(fd, PWM_SERVO_SET_MODE, PWM_SERVO_ENTER_TEST_MODE) < 0) {
-				PX4_ERR("Failed to Enter pwm test mode");
-				goto err_out_no_test;
-		}
-
 		PX4_INFO("Press CTRL-C or 'c' to abort.");
 
 		while (1) {
@@ -669,7 +651,7 @@ pwm_main(int argc, char *argv[])
 
 					if (ret != OK) {
 						PX4_ERR("PWM_SERVO_SET(%d)", i);
-						goto err_out;
+						return 1;
 					}
 				}
 			}
@@ -690,14 +672,13 @@ pwm_main(int argc, char *argv[])
 
 							if (ret != OK) {
 								PX4_ERR("PWM_SERVO_SET(%d)", i);
-								goto err_out;
+								return 1;
 							}
 						}
 					}
 
 					PX4_INFO("User abort\n");
-					rv = 0;
-					goto err_out;
+					return 0;
 				}
 			}
 
@@ -713,15 +694,8 @@ pwm_main(int argc, char *argv[])
 			up_pwm_update();
 #endif
 		}
-		rv = 0;
-err_out:
-			if (::ioctl(fd, PWM_SERVO_SET_MODE, PWM_SERVO_EXIT_TEST_MODE) < 0) {
-					rv = 1;
-					PX4_ERR("Failed to Exit pwm test mode");
-			}
 
-err_out_no_test:
-		return rv;
+		return 0;
 
 
 	} else if (!strcmp(command, "steps")) {
@@ -753,11 +727,6 @@ err_out_no_test:
 
 		PX4_WARN("Running 5 steps. WARNING! Motors will be live in 5 seconds\nPress any key to abort now.");
 		px4_sleep(5);
-
-		if (::ioctl(fd, PWM_SERVO_SET_MODE, PWM_SERVO_ENTER_TEST_MODE) < 0) {
-				PX4_ERR("Failed to Enter pwm test mode");
-				goto err_out_no_test;
-		}
 
 		unsigned off = 900;
 		unsigned idle = 1300;
@@ -795,7 +764,7 @@ err_out_no_test:
 
 						if (ret != OK) {
 							PX4_ERR("PWM_SERVO_SET(%d)", i);
-							goto err_out;
+							return 1;
 						}
 					}
 				}
@@ -816,14 +785,13 @@ err_out_no_test:
 
 								if (ret != OK) {
 									PX4_ERR("PWM_SERVO_SET(%d)", i);
-									goto err_out;
+									return 1;
 								}
 							}
 						}
 
 						PX4_INFO("User abort\n");
-						rv = 0;
-						goto err_out;
+						return 0;
 					}
 				}
 
@@ -849,8 +817,7 @@ err_out_no_test:
 			}
 		}
 
-		rv = 0;
-		goto err_out;
+		return 0;
 
 
 	} else if (!strcmp(command, "info")) {

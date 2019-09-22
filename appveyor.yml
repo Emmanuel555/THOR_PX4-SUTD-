@@ -3,12 +3,6 @@ version: "{build}"
 # shallow clone the main repo
 clone_depth: 1
 
-branches:
-  only:
-  - master
-  - beta
-  - stable
-
 # Build worker image (build VM template)
 image: Visual Studio 2017
 
@@ -21,6 +15,7 @@ init:
 - ver
 
 install:
+<<<<<<< HEAD
 # if the toolchain wasn't restored from build cache download and install it
 - ps: >-
     if (-not (Test-Path C:\PX4)) {
@@ -29,6 +24,12 @@ install:
     }
 
 # Note: using Start-Process -Wait is important
+=======
+- ps: if (-not (Test-Path C:\Toolchain.msi)) {Invoke-WebRequest https://s3-us-west-2.amazonaws.com/px4-tools/PX4+Windows+Cygwin+Toolchain/PX4+Windows+Cygwin+Toolchain+0.3.msi -OutFile C:\Toolchain.msi}
+- start /wait msiexec /i C:\Toolchain.msi /quiet /qn /norestart /log C:\install.log
+
+# Note: using start /wait is important
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 # because otherwise the install begins but non-blocking and the result cannot be used just after
 
 build_script:

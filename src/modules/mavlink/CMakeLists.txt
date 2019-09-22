@@ -68,7 +68,6 @@ px4_add_module(
 		git_ecl
 		ecl_geo
 		version
-	UNITY_BUILD
 	)
 
 if(PX4_TESTING)

@@ -18,6 +18,14 @@ set MIXER coax
 
 if [ $AUTOCNF = yes ]
 then
+	param set NAV_ACC_RAD 2.0
+	param set RTL_RETURN_ALT 30.0
+	param set RTL_DESCEND_ALT 10.0
+
+	param set PWM_DISARMED 900
+	param set PWM_MIN 1075
+	param set PWM_MAX 1950
+
 	param set MC_ROLL_P 6.5
 	param set MC_ROLLRATE_P 0.17
 	param set MC_ROLLRATE_I 0.05
@@ -33,6 +41,7 @@ then
 	param set MC_YAWRATE_I 0.1
 	param set MC_YAWRATE_D 0
 	param set MC_YAWRATE_FF 0
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/15001_coax_heli
 
 	param set NAV_ACC_RAD 2
 
@@ -44,11 +53,15 @@ then
 
 	param set RTL_RETURN_ALT 30
 	param set RTL_DESCEND_ALT 10
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/15001_coax_heli
 fi
+
+# use PWM parameters for throttle channel
+set PWM_OUT 34
+set PWM_RATE 400
 
 # This is the gimbal pass mixer
 set MIXER_AUX pass
-
-# use PWM parameters for throttle channel
+set PWM_AUX_RATE 50
 set PWM_AUX_OUT 1234
-set PWM_OUT 34

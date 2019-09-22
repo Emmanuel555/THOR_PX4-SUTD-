@@ -188,6 +188,40 @@ do_gyro(int argc, char *argv[])
 				return 1;
 			}
 
+<<<<<<< HEAD
+=======
+		} else if (argc == 3 && !strcmp(argv[0], "range")) {
+
+			/* set the range to i dps */
+			ret = ioctl(fd, GYROIOCSRANGE, strtoul(argv[2], NULL, 0));
+
+			if (ret) {
+				PX4_ERR("range could not be set");
+				return 1;
+			}
+
+		} else if (argc == 2 && !strcmp(argv[0], "check")) {
+			ret = ioctl(fd, GYROIOCSELFTEST, 0);
+
+			if (ret) {
+				PX4_WARN("gyro self test FAILED! Check calibration:");
+				struct gyro_calibration_s scale;
+				ret = ioctl(fd, GYROIOCGSCALE, (long unsigned int)&scale);
+
+				if (ret) {
+					PX4_ERR("failed getting gyro scale");
+					return 1;
+				}
+
+				PX4_INFO("offsets: X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_offset, (double)scale.y_offset,
+					 (double)scale.z_offset);
+				PX4_INFO("scale:   X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_scale, (double)scale.y_scale, (double)scale.z_scale);
+
+			} else {
+				PX4_INFO("gyro calibration and self test OK");
+			}
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 		} else {
 			print_usage();
 			return 1;
@@ -242,6 +276,27 @@ do_mag(int argc, char *argv[])
 				return 1;
 			}
 
+		} else if (argc == 2 && !strcmp(argv[0], "check")) {
+			ret = ioctl(fd, MAGIOCSELFTEST, 0);
+
+			if (ret) {
+				PX4_WARN("mag self test FAILED! Check calibration:");
+				struct mag_calibration_s scale;
+				ret = ioctl(fd, MAGIOCGSCALE, (long unsigned int)&scale);
+
+				if (ret) {
+					PX4_ERR("failed getting mag scale");
+					return 1;
+				}
+
+				PX4_INFO("offsets: X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_offset, (double)scale.y_offset,
+					 (double)scale.z_offset);
+				PX4_INFO("scale:   X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_scale, (double)scale.y_scale, (double)scale.z_scale);
+
+			} else {
+				PX4_INFO("mag calibration and self test OK");
+			}
+
 		} else {
 			print_usage();
 			return 1;
@@ -286,6 +341,40 @@ do_accel(int argc, char *argv[])
 				return 1;
 			}
 
+<<<<<<< HEAD
+=======
+		} else if (argc == 3 && !strcmp(argv[0], "range")) {
+
+			/* set the range to i G */
+			ret = ioctl(fd, ACCELIOCSRANGE, strtoul(argv[2], NULL, 0));
+
+			if (ret) {
+				PX4_ERR("range could not be set");
+				return 1;
+			}
+
+		} else if (argc == 2 && !strcmp(argv[0], "check")) {
+			ret = ioctl(fd, ACCELIOCSELFTEST, 0);
+
+			if (ret) {
+				PX4_WARN("accel self test FAILED! Check calibration:");
+				struct accel_calibration_s scale;
+				ret = ioctl(fd, ACCELIOCGSCALE, (long unsigned int)&scale);
+
+				if (ret) {
+					PX4_ERR("failed getting accel scale");
+					return 1;
+				}
+
+				PX4_INFO("offsets: X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_offset, (double)scale.y_offset,
+					 (double)scale.z_offset);
+				PX4_INFO("scale:   X: % 9.6f Y: % 9.6f Z: % 9.6f", (double)scale.x_scale, (double)scale.y_scale, (double)scale.z_scale);
+
+			} else {
+				PX4_INFO("accel calibration and self test OK");
+			}
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 		} else {
 			print_usage();
 			return 1;

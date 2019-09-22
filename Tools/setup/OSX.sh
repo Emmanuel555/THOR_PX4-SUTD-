@@ -28,8 +28,12 @@ fi
 
 # Python dependencies
 sudo easy_install pip
+<<<<<<< HEAD
 sudo -H pip install --upgrade --force-reinstall pip
 sudo -H pip install -I -r ${DIR}/requirements.txt
+=======
+pip install -r ${DIR}/requirements.txt
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 # Optional, but recommended additional simulation tools:
 if [[ $INSTALL_SIM == "--sim-tools" ]]; then

@@ -124,10 +124,9 @@ add_custom_command(OUTPUT px4_parameters.c px4_parameters.h px4_parameters_publi
 set(SRCS)
 if ("${CONFIG_SHMEM}" STREQUAL "1")
 	message(STATUS "parameters shared memory enabled")
-	add_definitions(-DCONFIG_SHMEM=1)
-	list(APPEND SRCS parameters_shmem.cpp)
+	list(APPEND SRCS param_shmem.c)
 else()
-	list(APPEND SRCS parameters.cpp)
+	list(APPEND SRCS param.c)
 endif()
 
 if(${PX4_PLATFORM} STREQUAL "nuttx")
@@ -142,6 +141,7 @@ if (NOT "${PX4_BOARD}" MATCHES "px4_io")
 		px4_parameters.h
 		px4_parameters_public.h
 		)
+	add_dependencies(parameters prebuild_targets)
 
 	if ("${CONFIG_SHMEM}" STREQUAL "1")
 		target_link_libraries(parameters PRIVATE px4_layer)
@@ -153,8 +153,12 @@ if (NOT "${PX4_BOARD}" MATCHES "px4_io")
 else()
 	add_library(parameters ${PX4_SOURCE_DIR}/src/platforms/empty.c)
 endif()
-add_dependencies(parameters prebuild_targets)
 
+<<<<<<< HEAD
 if(${PX4_PLATFORM} STREQUAL "nuttx")
 	target_link_libraries(parameters PRIVATE flashparams tinybson)
+=======
+if(${OS} STREQUAL "nuttx")
+	target_link_libraries(parameters PRIVATE flashparams)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 endif()

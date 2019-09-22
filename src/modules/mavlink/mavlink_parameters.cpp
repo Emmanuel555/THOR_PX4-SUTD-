@@ -135,11 +135,15 @@ MavlinkParametersManager::handle_message(const mavlink_message_t *msg)
 
 				/* Whatever the value is, we're being told to stop sending */
 				if (strncmp(name, "_HASH_CHECK", sizeof(name)) == 0) {
+<<<<<<< HEAD
 
 					if (_mavlink->hash_check_enabled()) {
 						_send_all_index = -1;
 					}
 
+=======
+					_send_all_index = -1;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 					/* No other action taken, return */
 					return;
 				}

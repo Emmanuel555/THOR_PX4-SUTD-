@@ -31,9 +31,12 @@
 #
 ############################################################################
 
+<<<<<<< HEAD
 if (ENABLE_LOCKSTEP_SCHEDULER)
 	add_subdirectory(lockstep_scheduler)
 endif()
 
 add_subdirectory(px4_daemon)
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 add_subdirectory(px4_layer)

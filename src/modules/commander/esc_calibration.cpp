@@ -66,8 +66,13 @@ using namespace time_literals;
 int do_esc_calibration(orb_advert_t *mavlink_log_pub, struct actuator_armed_s *armed)
 {
 	int	return_code = PX4_OK;
+<<<<<<< HEAD
 
 #if defined(__PX4_POSIX_OCPOC) || defined(__PX4_POSIX_BBBLUE)
+=======
+	
+#if defined(__PX4_POSIX_OCPOC)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	hrt_abstime timeout_start = 0;
 	hrt_abstime timeout_wait = 60_s;
 	armed->in_esc_calibration_mode = true;

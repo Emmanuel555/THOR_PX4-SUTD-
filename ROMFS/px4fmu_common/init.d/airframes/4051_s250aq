@@ -28,11 +28,15 @@ set PWM_OUT 1234
 
 if [ $AUTOCNF = yes ]
 then
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4051_s250aq
 	param set ATT_BIAS_MAX 0
 
 	param set CBRK_IO_SAFETY 22027
 
 	param set MC_ROLL_P 8
+=======
+	param set MC_ROLL_P 8.0
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4051_s250aq
 	param set MC_ROLLRATE_P 0.19
 	param set MC_ROLLRATE_I 0.1
 	param set MC_ROLLRATE_D 0.0055
@@ -56,8 +60,13 @@ then
 	param set MC_TPA_RATE_I 0
 	param set MC_TPA_RATE_P 1
 
+
+	param set PWM_MIN 1075
+
 	param set MPC_THR_MIN 0.06
 	param set MPC_MANTHR_MIN 0.06
 
-	param set PWM_MIN 1075
+	param set ATT_BIAS_MAX 0.0
+
+	param set CBRK_IO_SAFETY 22027
 fi

@@ -45,7 +45,7 @@ px4_add_module(
 		arm_auth.cpp
 		baro_calibration.cpp
 		calibration_routines.cpp
-		Commander.cpp
+		commander.cpp
 		commander_helper.cpp
 		esc_calibration.cpp
 		gyro_calibration.cpp

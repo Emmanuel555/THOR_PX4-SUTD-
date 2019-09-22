@@ -46,6 +46,7 @@
 #include <semaphore.h>
 #include <debug.h>
 
+#include <uavcan_stm32/clock.hpp>
 #include <uavcan/node/sub_node.hpp>
 #include <uavcan/protocol/node_status_monitor.hpp>
 

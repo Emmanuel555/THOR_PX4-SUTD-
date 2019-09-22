@@ -41,12 +41,37 @@
 
 #pragma once
 
-#include "FlightTask.hpp"
+#include "tasks/FlightTask.hpp"
+#include "tasks/FlightTaskManualAltitude.hpp"
+#include "tasks/FlightTaskManualAltitudeSmooth.hpp"
+#include "tasks/FlightTaskManualPosition.hpp"
+#include "tasks/FlightTaskManualPositionSmooth.hpp"
+#include "tasks/FlightTaskManualStabilized.hpp"
+#include "tasks/FlightTaskAutoLine.hpp"
+#include "tasks/FlightTaskAutoFollowMe.hpp"
+#include "tasks/FlightTaskOrbit.hpp"
+#include "tasks/FlightTaskSport.hpp"
+#include "tasks/FlightTaskOffboard.hpp"
+
 #include "SubscriptionArray.hpp"
-#include "FlightTasks_generated.hpp"
-#include <lib/WeatherVane/WeatherVane.hpp>
 
 #include <new>
+
+enum class FlightTaskIndex : int {
+	None = -1,
+	Stabilized,
+	Altitude,
+	AltitudeSmooth,
+	Position,
+	PositionSmooth,
+	Orbit,
+	Sport,
+	AutoLine,
+	AutoFollowMe,
+	Offboard,
+
+	Count // number of tasks
+};
 
 class FlightTasks
 {
@@ -79,6 +104,7 @@ public:
 	const vehicle_constraints_s getConstraints();
 
 	/**
+<<<<<<< HEAD
 	 * Get landing gear position.
 	 * @return landing gear
 	 */
@@ -97,6 +123,8 @@ public:
 	const vehicle_trajectory_waypoint_s &getEmptyAvoidanceWaypoint();
 
 	/**
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	 * Switch to the next task in the available list (for testing)
 	 * @return 1 on success, <0 on error
 	 */
@@ -132,6 +160,7 @@ public:
 	 */
 	const char *errorToString(const int error);
 
+<<<<<<< HEAD
 	/**
 	 * Sets an external yaw handler. The active flight task can use the yaw handler to implement a different yaw control strategy.
 	 */
@@ -144,13 +173,29 @@ public:
 
 	void updateVelocityControllerIO(const matrix::Vector3f &vel_sp, const matrix::Vector3f &thrust_sp) {_current_task.task->updateVelocityControllerIO(vel_sp, thrust_sp); }
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 private:
 
 	/**
 	 * Union with all existing tasks: we use it to make sure that only the memory of the largest existing
 	 * task is needed, and to avoid using dynamic memory allocations.
 	 */
-	TaskUnion _task_union; /**< storage for the currently active task */
+	union TaskUnion {
+		TaskUnion() {}
+		~TaskUnion() {}
+
+		FlightTaskManualStabilized stabilized;
+		FlightTaskManualAltitude altitude;
+		FlightTaskManualAltitudeSmooth altitude_smooth;
+		FlightTaskManualPosition position;
+		FlightTaskManualPositionSmooth position_smooth;
+		FlightTaskOrbit orbit;
+		FlightTaskSport sport;
+		FlightTaskAutoLine autoLine;
+		FlightTaskAutoFollowMe autoFollowMe;
+		FlightTaskOffboard offboard;
+	} _task_union; /**< storage for the currently active task */
 
 	struct flight_task_t {
 		FlightTask *task;
@@ -179,7 +224,6 @@ private:
 	 * Check for vehicle commands (received via MAVLink), evaluate and acknowledge them
 	 */
 	void _updateCommand();
-	FlightTaskIndex switchVehicleCommand(const int command);
 	int _sub_vehicle_command = -1; /**< topic handle on which commands are received */
 	orb_advert_t _pub_vehicle_command_ack = nullptr; /**< topic handle to which commands get acknowledged */
 

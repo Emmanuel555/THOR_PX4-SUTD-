@@ -268,6 +268,13 @@ private:
 	 */
 	int             self_test();
 
+	/**
+	 * Gyro self test
+	 *
+	 * @return 0 on success, 1 on failure
+	 */
+	int             gyro_self_test();
+
 	/*
 	 * set gyro sample rate
 	 */

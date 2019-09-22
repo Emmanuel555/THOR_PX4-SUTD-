@@ -34,7 +34,6 @@
 /**
  * Primary mag ID
  *
- * @category system
  * @group Sensor Calibration
  */
 PARAM_DEFINE_INT32(CAL_MAG_PRIME, 0);

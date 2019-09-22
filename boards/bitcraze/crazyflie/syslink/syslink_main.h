@@ -154,12 +154,12 @@ private:
 };
 
 
-class SyslinkBridge : public cdev::CDev
+class SyslinkBridge : public device::CDev
 {
 
 public:
 	SyslinkBridge(Syslink *link);
-	virtual ~SyslinkBridge() = default;
+	virtual ~SyslinkBridge();
 
 	virtual int	init();
 
@@ -187,12 +187,12 @@ private:
 };
 
 
-class SyslinkMemory : public cdev::CDev
+class SyslinkMemory : public device::CDev
 {
 
 public:
 	SyslinkMemory(Syslink *link);
-	virtual ~SyslinkMemory() = default;
+	virtual ~SyslinkMemory();
 
 	virtual int	init();
 

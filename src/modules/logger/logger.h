@@ -363,6 +363,16 @@ private:
 	 */
 	inline void debug_print_buffer(uint32_t &total_bytes, hrt_abstime &timer_start);
 
+<<<<<<< HEAD
+=======
+	static constexpr size_t 	MAX_TOPICS_NUM = 64; /**< Maximum number of logged topics */
+	static constexpr unsigned	MAX_NO_LOGFILE = 999;	/**< Maximum number of log files */
+#if defined(__PX4_POSIX_EAGLE) || defined(__PX4_POSIX_EXCELSIOR)
+	static constexpr const char	*LOG_ROOT = PX4_ROOTFSDIR"/log";
+#else
+	static constexpr const char 	*LOG_ROOT = PX4_ROOTFSDIR"/fs/microsd/log";
+#endif
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 	uint8_t						*_msg_buffer{nullptr};
 	int						_msg_buffer_len{0};

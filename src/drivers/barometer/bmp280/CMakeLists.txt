@@ -34,11 +34,11 @@
 px4_add_module(
 	MODULE drivers__bmp280
 	MAIN bmp280
-	STACK_MAIN
-		1200
+	COMPILE_FLAGS
 	SRCS
 		bmp280_spi.cpp
 		bmp280_i2c.cpp
 		bmp280.cpp
+	DEPENDS
 	)
 

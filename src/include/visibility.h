@@ -59,6 +59,7 @@
 #  define __END_DECLS
 #endif
 
+<<<<<<< HEAD
 /* exit() is used on NuttX to exit a task. However on Posix, it will exit the
  * whole application, so we prevent its use there. There are cases where it
  * still needs to be used, thus we remap system_exit to exit.
@@ -93,6 +94,8 @@
 #ifdef __cplusplus
 #include <cstdlib>
 #endif
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 // We don't poison usleep and sleep on NuttX because it is used in dependencies
 // like uavcan and we don't need to fake time on the real system.

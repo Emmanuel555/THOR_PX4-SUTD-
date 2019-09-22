@@ -34,6 +34,7 @@
 px4_add_git_submodule(TARGET git_uavcan PATH "libuavcan")
 
 set(UAVCAN_USE_CPP03 ON CACHE BOOL "uavcan cpp03")
+<<<<<<< HEAD:src/drivers/uavcan/CMakeLists.txt
 
 if(CONFIG_ARCH_CHIP)
 
@@ -45,22 +46,28 @@ if(CONFIG_ARCH_CHIP)
 		set(UAVCAN_TIMER 5) # The default timer the 5
 	endif()
 endif()
+=======
+set(UAVCAN_PLATFORM stm32 CACHE STRING "uavcan platform")
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/modules/uavcan/CMakeLists.txt
 
 if(NOT config_uavcan_num_ifaces)
 	message(FATAL_ERROR "config_uavcan_num_ifaces not set")
 endif()
 
+<<<<<<< HEAD:src/drivers/uavcan/CMakeLists.txt
 string(TOUPPER "${PX4_PLATFORM}" OS_UPPER)
 string(TOUPPER "${UAVCAN_PLATFORM}" UAVCAN_PLATFORM_UPPER)
+=======
+string(TOUPPER "${OS}" OS_UPPER)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/modules/uavcan/CMakeLists.txt
 add_definitions(
 		-DUAVCAN_CPP_VERSION=UAVCAN_CPP03
 		-DUAVCAN_MEM_POOL_BLOCK_SIZE=48
 		-DUAVCAN_NO_ASSERTIONS
-		-DUAVCAN_PLATFORM=${UAVCAN_PLATFORM}
-		-DUAVCAN_DRIVER=uavcan_${UAVCAN_PLATFORM}
-		-DUAVCAN_${UAVCAN_PLATFORM_UPPER}_${OS_UPPER}=1
-		-DUAVCAN_${UAVCAN_PLATFORM_UPPER}_NUM_IFACES=${config_uavcan_num_ifaces}
-		-DUAVCAN_${UAVCAN_PLATFORM_UPPER}_TIMER_NUMBER=${UAVCAN_TIMER}
+		-DUAVCAN_PLATFORM=stm32
+		-DUAVCAN_STM32_${OS_UPPER}=1
+		-DUAVCAN_STM32_NUM_IFACES=${config_uavcan_num_ifaces}
+		-DUAVCAN_STM32_TIMER_NUMBER=5
 		)
 
 add_subdirectory(libuavcan EXCLUDE_FROM_ALL)
@@ -76,7 +83,7 @@ px4_add_module(
 		libuavcan/libuavcan/include
 		libuavcan/libuavcan/include/dsdlc_generated
 		libuavcan/libuavcan_drivers/posix/include
-		libuavcan/libuavcan_drivers/${UAVCAN_PLATFORM}/driver/include
+		libuavcan/libuavcan_drivers/stm32/driver/include
 	SRCS
 		# Main
 		uavcan_main.cpp
@@ -102,5 +109,5 @@ px4_add_module(
 		# within libuavcan
 		libuavcan_dsdlc
 		uavcan
-		uavcan_${UAVCAN_PLATFORM}_driver
+		uavcan_stm32_driver
 	)

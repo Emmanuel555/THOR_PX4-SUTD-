@@ -4,14 +4,22 @@ if [ -z ${PX4_DOCKER_REPO+x} ]; then
 	echo "guessing PX4_DOCKER_REPO based on input";
 	if [[ $@ =~ .*px4_fmu.* ]]; then
 		# nuttx-px4fmu-v{1,2,3,4,5}
+<<<<<<< HEAD
 		PX4_DOCKER_REPO="px4io/px4-dev-nuttx:2018-11-22"
 	elif [[ $@ =~ .*navio2.* ]] || [[ $@ =~ .*raspberry.* ]] || [[ $@ =~ .*bebop.* ]]; then
 		# posix_rpi_cross, posix_bebop_default
 		PX4_DOCKER_REPO="px4io/px4-dev-raspi:2018-11-22"
+=======
+		PX4_DOCKER_REPO="px4io/px4-dev-nuttx:2018-07-19"
+	elif [[ $@ =~ .*rpi.* ]] || [[ $@ =~ .*bebop.* ]]; then
+		# posix_rpi_cross, posix_bebop_default
+		PX4_DOCKER_REPO="px4io/px4-dev-raspi:2018-07-19"
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	elif [[ $@ =~ .*eagle.* ]] || [[ $@ =~ .*excelsior.* ]]; then
 		# eagle, excelsior
-		PX4_DOCKER_REPO="lorenzmeier/px4-dev-snapdragon:2018-09-12"
+		PX4_DOCKER_REPO="lorenzmeier/px4-dev-snapdragon:2017-12-29"
 	elif [[ $@ =~ .*ocpoc.* ]]; then
+<<<<<<< HEAD
 		# aerotennaocpoc_ubuntu
 		PX4_DOCKER_REPO="px4io/px4-dev-armhf:2018-11-22"
 	elif [[ $@ =~ .*clang.* ]] || [[ $@ =~ .*scan-build.* ]]; then	
@@ -23,6 +31,19 @@ if [ -z ${PX4_DOCKER_REPO+x} ]; then
 	elif [[ $@ =~ .*tests* ]]; then
 		# run all tests with simulation
 		PX4_DOCKER_REPO="px4io/px4-dev-simulation:2018-11-22"
+=======
+		# posix_ocpoc_ubuntu
+		PX4_DOCKER_REPO="px4io/px4-dev-armhf:2018-07-19"
+	elif [[ $@ =~ .*clang.* ]] || [[ $@ =~ .*scan-build.* ]]; then	
+		# clang tools
+		PX4_DOCKER_REPO="px4io/px4-dev-clang:2018-07-19"
+	elif [[ $@ =~ .*cppcheck.* ]]; then
+		# TODO: remove this once px4io/px4-dev-base updates
+		PX4_DOCKER_REPO="px4io/px4-dev-base:ubuntu17.10"
+	elif [[ $@ =~ .*tests* ]]; then
+		# run all tests with simulation
+		PX4_DOCKER_REPO="px4io/px4-dev-simulation:2018-07-19"
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	fi
 else
 	echo "PX4_DOCKER_REPO is set to '$PX4_DOCKER_REPO'";
@@ -30,7 +51,11 @@ fi
 
 # otherwise default to nuttx
 if [ -z ${PX4_DOCKER_REPO+x} ]; then
+<<<<<<< HEAD
 	PX4_DOCKER_REPO="px4io/px4-dev-nuttx:2018-11-22"
+=======
+	PX4_DOCKER_REPO="px4io/px4-dev-nuttx:2018-07-19"
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 fi
 
 # docker hygiene

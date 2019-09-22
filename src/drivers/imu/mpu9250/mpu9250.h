@@ -670,6 +670,20 @@ private:
 	 */
 	bool			is_external() { return _interface->external(); }
 
+	/**
+	 * Accel self test
+	 *
+	 * @return 0 on success, 1 on failure
+	 */
+	int 			accel_self_test();
+
+	/**
+	 * Gyro self test
+	 *
+	 * @return 0 on success, 1 on failure
+	 */
+	int 			gyro_self_test();
+
 	/*
 	  set low pass filter frequency
 	 */

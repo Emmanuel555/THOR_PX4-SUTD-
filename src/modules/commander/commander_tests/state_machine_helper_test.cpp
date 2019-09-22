@@ -280,7 +280,9 @@ bool StateMachineHelperTest::armingStateTransitionTest()
 	struct vehicle_status_flags_s status_flags = {};
 	struct safety_s         safety = {};
 	struct actuator_armed_s armed = {};
+	struct battery_status_s battery = {};
 
+<<<<<<< HEAD
 	size_t cArmingTransitionTests = sizeof(rgArmingTransitionTests) / sizeof(rgArmingTransitionTests[0]);
 
 	for (size_t i = 0; i < cArmingTransitionTests; i++) {
@@ -314,6 +316,40 @@ bool StateMachineHelperTest::armingStateTransitionTest()
 		ut_compare(test->assertMsg, armed.armed, test->expected_state.armed);
 		ut_compare(test->assertMsg, armed.ready_to_arm, test->expected_state.ready_to_arm);
 	}
+=======
+    size_t cArmingTransitionTests = sizeof(rgArmingTransitionTests) / sizeof(rgArmingTransitionTests[0]);
+    for (size_t i=0; i<cArmingTransitionTests; i++) {
+        const ArmingTransitionTest_t* test = &rgArmingTransitionTests[i];
+
+	const bool check_gps = false;
+
+        // Setup initial machine state
+        status.arming_state = test->current_state.arming_state;
+        status_flags.condition_system_sensors_initialized = test->condition_system_sensors_initialized;
+        status.hil_state = test->hil_state;
+        // The power status of the test unit is not relevant for the unit test
+        status_flags.circuit_breaker_engaged_power_check = true;
+        safety.safety_switch_available = test->safety_switch_available;
+        safety.safety_off = test->safety_off;
+        armed.armed = test->current_state.armed;
+        armed.ready_to_arm = test->current_state.ready_to_arm;
+
+        // Attempt transition
+        transition_result_t result = arming_state_transition(&status, battery, safety, test->requested_state, &armed,
+				false /* no pre-arm checks */,
+				nullptr /* no mavlink_log_pub */,
+				&status_flags,
+				(check_gps ? ARM_REQ_GPS_BIT : 0),
+				2e6 /* 2 seconds after boot, everything should be checked */
+				);
+
+        // Validate result of transition
+        ut_compare(test->assertMsg, test->expected_transition_result, result);
+        ut_compare(test->assertMsg, status.arming_state, test->expected_state.arming_state);
+        ut_compare(test->assertMsg, armed.armed, test->expected_state.armed);
+        ut_compare(test->assertMsg, armed.ready_to_arm, test->expected_state.ready_to_arm);
+    }
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 	return true;
 }

@@ -90,10 +90,8 @@ public:
 
 protected:
 	const struct orb_metadata *_meta;
-
 	unsigned _instance;
-
-	int _handle{-1};
+	int _handle;
 };
 
 /**
@@ -157,9 +155,7 @@ public:
 		     List<SubscriptionNode *> *list = nullptr):
 		SubscriptionNode(meta, interval, instance, list),
 		_data() // initialize data structure to zero
-	{
-		forcedUpdate();
-	}
+	{}
 
 	~Subscription() override = default;
 

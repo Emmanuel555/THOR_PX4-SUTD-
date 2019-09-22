@@ -39,8 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>  /* memset, etc */
 #include <stdlib.h>  /* exit */
 
-// FIXME: this needs to be checked: we need to handle OOM properly instead of just exiting
-#define oom() system_exit(-1)
+#define oom() exit(-1)
 
 typedef void (ctor_f)(void *dst, const void *src);
 typedef void (dtor_f)(void *elt);

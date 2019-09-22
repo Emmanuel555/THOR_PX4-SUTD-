@@ -55,6 +55,8 @@ PARAM_DEFINE_INT32(SDLOG_UTC_OFFSET, 0);
  * Determines when to start and stop logging. By default, logging is started
  * when arming the system, and stopped when disarming.
  *
+ * This parameter is only for the new logger (SYS_LOGGER=1).
+ *
  * @value 0 when armed until disarm (default)
  * @value 1 from boot until disarm
  * @value 2 from boot until shutdown
@@ -65,6 +67,7 @@ PARAM_DEFINE_INT32(SDLOG_UTC_OFFSET, 0);
 PARAM_DEFINE_INT32(SDLOG_MODE, 0);
 
 /**
+<<<<<<< HEAD
  * Mission Log
  *
  * If enabled, a small additional "mission" log file will be written to the SD card.
@@ -89,14 +92,18 @@ PARAM_DEFINE_INT32(SDLOG_MISSION, 1);
 
 /**
  * Logging topic profile (integer bitmask).
+=======
+ * Logging Topic Profile
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
  *
- * This integer bitmask controls the set and rates of logged topics.
+ * This is an integer bitmask controlling the set and rates of logged topics.
  * The default allows for general log analysis and estimator replay, while
  * keeping the log file size reasonably small.
  *
  * Enabling multiple sets leads to higher bandwidth requirements and larger log
  * files.
  *
+<<<<<<< HEAD
  * Set bits true to enable:
  * 0 : Default set (used for general log analysis)
  * 1 : Full rate estimator (EKF2) replay topics
@@ -117,6 +124,26 @@ PARAM_DEFINE_INT32(SDLOG_MISSION, 1);
  * @bit 5 Debug
  * @bit 6 Sensor comparison
  * @bit 7 Computer Vision and Avoidance
+=======
+ * Set bits in the following positions to enable:
+ * 0 : Set to true to use the default set (used for general log analysis)
+ * 1 : Set to true to enable full rate estimator (EKF2) replay topics
+ * 2 : Set to true to enable topics for thermal calibration (high rate raw IMU and Baro sensor data)
+ * 3 : Set to true to enable topics for system identification (high rate actuator control and IMU data)
+ * 4 : Set to true to enable full rates for analysis of fast maneuvers (RC, attitude, rates and actuators)
+ * 5 : Set to true to enable debugging topics (debug_*.msg topics, for custom code)
+ * 6 : Set to true to enable topics for sensor comparison (low rate raw IMU, Baro and Magnetomer data)
+ *
+ * @min 0
+ * @max 127
+ * @bit 0 default set (log analysis)
+ * @bit 1 estimator replay (EKF2)
+ * @bit 2 thermal calibration
+ * @bit 3 system identification
+ * @bit 4 high rate
+ * @bit 5 debug
+ * @bit 6 sensor comparison
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
  * @reboot_required true
  * @group SD Logging
  */

@@ -21,13 +21,19 @@
 
 sh /etc/init.d/rc.fw_defaults
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/2100_standard_plane
 if [ $AUTOCNF = yes ]
 then
 	param set PWM_AUX_RATE 50
 	param set PWM_RATE 50
 fi
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/2100_standard_plane
 set MIXER AETRFG
 
-# Rate must be set by group (see pwm info).
-# Throttle is in the same group as servos.
+set PWM_RATE 50
+set PWM_AUX_RATE 50
+
+# rate must be set by group (see pwm info)
+# throttle is in the same group as servos

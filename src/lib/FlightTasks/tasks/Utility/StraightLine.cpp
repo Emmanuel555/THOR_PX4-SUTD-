@@ -84,11 +84,7 @@ void StraightLine::generateSetpoints(matrix::Vector3f &position_setpoint, matrix
 	float speed_sp    = dist_to_target > acc_dec_distance ? _desired_speed        :  _desired_speed_at_target;
 	float max_acc_dec = speed_sp > speed_sp_prev          ? _desired_acceleration : -_desired_deceleration;
 
-	float acc_track = 0.0f;
-
-	if (_deltatime > FLT_EPSILON) {
-		acc_track = (speed_sp - speed_sp_prev) / _deltatime;
-	}
+	float acc_track = (speed_sp - speed_sp_prev) / _deltatime;
 
 	if (fabs(acc_track) > fabs(max_acc_dec)) {
 		// accelerate/decelerate with desired acceleration/deceleration towards target
@@ -114,7 +110,11 @@ float StraightLine::getMaxAcc()
 	Vector3f u_orig_to_target = (_target - _origin).unit_or_zero();
 
 	// calculate the maximal horizontal acceleration
+<<<<<<< HEAD
 	float divider = Vector2f(u_orig_to_target).length();
+=======
+	float divider = Vector2f(u_orig_to_target.data()).length();
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	float max_acc_hor = MPC_ACC_HOR_MAX.get();
 
 	if (divider > FLT_EPSILON) {
@@ -197,7 +197,7 @@ void StraightLine::setSpeed(const float &speed)
 {
 	float vel_max = getMaxVel();
 
-	if (speed > FLT_EPSILON && speed < vel_max) {
+	if (speed > 0 && speed < vel_max) {
 		_desired_speed = speed;
 
 	} else if (speed > vel_max) {
@@ -209,7 +209,7 @@ void StraightLine::setSpeedAtTarget(const float &speed_at_target)
 {
 	float vel_max = getMaxVel();
 
-	if (speed_at_target > FLT_EPSILON && speed_at_target < vel_max) {
+	if (speed_at_target > 0 && speed_at_target < vel_max) {
 		_desired_speed_at_target = speed_at_target;
 
 	} else if (speed_at_target > vel_max) {
@@ -221,7 +221,7 @@ void StraightLine::setAcceleration(const float &acc)
 {
 	float acc_max = getMaxVel();
 
-	if (acc > FLT_EPSILON && acc < acc_max) {
+	if (acc > 0 && acc < acc_max) {
 		_desired_acceleration = acc;
 
 	} else if (acc > acc_max) {
@@ -231,7 +231,7 @@ void StraightLine::setAcceleration(const float &acc)
 
 void StraightLine::setDeceleration(const float &dec)
 {
-	if (dec > FLT_EPSILON && dec < DECELERATION_MAX) {
+	if (dec > 0 && dec < DECELERATION_MAX) {
 		_desired_deceleration = dec;
 
 	} else if (dec > DECELERATION_MAX) {

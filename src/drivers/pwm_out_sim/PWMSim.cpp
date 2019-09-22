@@ -37,7 +37,7 @@
 #include <uORB/topics/multirotor_motor_limits.h>
 
 PWMSim::PWMSim() :
-	CDev(PWM_OUTPUT0_DEVICE_PATH),
+	CDev("pwm_out_sim", PWM_OUTPUT0_DEVICE_PATH),
 	_perf_control_latency(perf_alloc(PC_ELAPSED, "pwm_out_sim control latency"))
 {
 	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
@@ -77,18 +77,21 @@ PWMSim::set_mode(Mode mode)
 	 */
 	switch (mode) {
 	case MODE_8PWM:
+		PX4_INFO("MODE_8PWM");
 		/* multi-port as 8 PWM outs */
 		_update_rate = 400;	/* default output rate */
 		_num_outputs = 8;
 		break;
 
 	case MODE_16PWM:
+		PX4_INFO("MODE_16PWM");
 		/* multi-port as 16 PWM outs */
 		_update_rate = 400;	/* default output rate */
 		_num_outputs = 16;
 		break;
 
 	case MODE_NONE:
+		PX4_INFO("MODE_NONE");
 		/* disable servo outputs and set a very low update rate */
 		_update_rate = 10;
 		_num_outputs = 0;
@@ -197,7 +200,11 @@ PWMSim::run()
 
 		/* this can happen during boot, but after the sleep its likely resolved */
 		if (_poll_fds_num == 0) {
+<<<<<<< HEAD
 			px4_sleep(1);
+=======
+			usleep(1000 * 1000);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 			PX4_DEBUG("no valid fds");
 			continue;

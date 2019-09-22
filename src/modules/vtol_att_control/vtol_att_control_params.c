@@ -74,13 +74,14 @@ PARAM_DEFINE_INT32(VT_IDLE_PWM_MC, 900);
 PARAM_DEFINE_INT32(VT_FW_PERM_STAB, 0);
 
 /**
- * VTOL Type (Tailsitter=0, Tiltrotor=1, Standard=2)
+ * VTOL Type (Tailsitter=0, Tiltrotor=1, Standard=2, Thor=3)
  *
  * @value 0 Tailsitter
  * @value 1 Tiltrotor
  * @value 2 Standard
+ * @value 3 Thor
  * @min 0
- * @max 2
+ * @max 3
  * @decimal 0
  * @group VTOL Attitude Control
  */
@@ -280,6 +281,44 @@ PARAM_DEFINE_INT32(VT_FW_QC_R, 0);
 PARAM_DEFINE_FLOAT(VT_F_TR_OL_TM, 6.0f);
 
 /**
+ * Weather-vane yaw rate scale.
+ *
+ * The desired yawrate from the controller will be scaled in order to avoid
+ * yaw fighting against the wind.
+ *
+ * @min 0.0
+ * @max 1.0
+ * @increment 0.01
+ * @decimal 3
+ * @group VTOL Attitude Control
+ */
+PARAM_DEFINE_FLOAT(VT_WV_YAWR_SCL, 0.15f);
+
+/**
+ * Enable weather-vane mode takeoff for missions
+ *
+ * @boolean
+ * @group Mission
+ */
+PARAM_DEFINE_INT32(VT_WV_TKO_EN, 0);
+
+/**
+ * Weather-vane mode for loiter
+ *
+ * @boolean
+ * @group Mission
+ */
+PARAM_DEFINE_INT32(VT_WV_LTR_EN, 0);
+
+/**
+ * Weather-vane mode landings for missions
+ *
+ * @boolean
+ * @group Mission
+ */
+PARAM_DEFINE_INT32(VT_WV_LND_EN, 0);
+
+/**
  * The channel number of motors that must be turned off in fixed wing mode.
  *
  * @min 0
@@ -290,6 +329,7 @@ PARAM_DEFINE_FLOAT(VT_F_TR_OL_TM, 6.0f);
  */
 PARAM_DEFINE_INT32(VT_FW_MOT_OFFID, 0);
 
+<<<<<<< HEAD
 /**
  * Differential thrust in forwards flight.
  *
@@ -314,3 +354,6 @@ PARAM_DEFINE_INT32(VT_FW_DIFTHR_EN, 0);
  * @group VTOL Attitude Control
  */
 PARAM_DEFINE_FLOAT(VT_FW_DIFTHR_SC, 0.1f);
+=======
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

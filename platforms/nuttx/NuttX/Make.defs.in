@@ -62,6 +62,7 @@ ifeq ($(WINTOOL),y)
   MKDEP = $(TOPDIR)/tools/mknulldeps.sh
 endif
 
+<<<<<<< HEAD:platforms/nuttx/NuttX/Make.defs.in
 FLAGS = -Os -g2 \
 	-fdata-sections \
 	-ffunction-sections \
@@ -92,6 +93,9 @@ CFLAGS = $(ARCHINCLUDES) \
 	-std=gnu99 \
 	${CMAKE_C_FLAGS} \
 	$(FLAGS) \
+=======
+CFLAGS = -Os -g2 ${CMAKE_C_FLAGS} $(ARCHINCLUDES) \
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:platforms/nuttx/nuttx-configs/Make.defs.in
 	-Wno-bad-function-cast \
 	-Wno-float-equal \
 	-Wno-implicit-fallthrough \
@@ -106,10 +110,14 @@ CFLAGS = $(ARCHINCLUDES) \
 	-Wno-sign-compare \
 	-Wno-type-limits
 
+<<<<<<< HEAD:platforms/nuttx/NuttX/Make.defs.in
 CXXFLAGS = $(ARCHXXINCLUDES) \
 	-std=gnu++11 \
 	${CMAKE_CXX_FLAGS} \
 	$(FLAGS) \
+=======
+CXXFLAGS = -Os -g2 ${CMAKE_CXX_FLAGS} $(ARCHXXINCLUDES) \
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:platforms/nuttx/nuttx-configs/Make.defs.in
 	-fcheck-new \
 	-fno-builtin \
 	-fno-exceptions \

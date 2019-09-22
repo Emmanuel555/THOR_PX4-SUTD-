@@ -58,15 +58,22 @@ __BEGIN_DECLS
  * the param_values and 2 functions to be global
  */
 
+#define FLASH_PARAMS_EXPOSE __EXPORT
+
 __EXPORT extern UT_array        *param_values;
 __EXPORT int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes);
 __EXPORT const void *param_get_value_ptr_external(param_t param);
 
 /* The interface hooks to the Flash based storage. The caller is responsible for locking */
+<<<<<<< HEAD
 __EXPORT int flash_param_save(bool only_unsaved);
 __EXPORT int flash_param_load();
 __EXPORT int flash_param_import();
 
+=======
+__EXPORT int flash_param_save(void);
+__EXPORT int flash_param_load(void);
+__EXPORT int flash_param_import(void);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 __END_DECLS
-
 #endif /* _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H */

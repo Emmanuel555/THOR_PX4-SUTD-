@@ -33,7 +33,7 @@
 px4_add_module(
 	MODULE drivers__lsm303d
 	MAIN lsm303d
-	STACK_MAIN 1500
+	STACK_MAIN 1200
 	COMPILE_FLAGS
 	SRCS
 		lsm303d.cpp

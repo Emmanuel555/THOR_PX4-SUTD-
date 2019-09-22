@@ -1,4 +1,3 @@
-uint64 timestamp		# time since system start (microseconds)
 uint8 VEHICLE_RESULT_ACCEPTED = 0
 uint8 VEHICLE_RESULT_TEMPORARILY_REJECTED = 1
 uint8 VEHICLE_RESULT_DENIED = 2

@@ -72,4 +72,25 @@ struct accel_calibration_s {
 /** set the accel scaling constants to the structure pointed to by (arg) */
 #define ACCELIOCSSCALE		_ACCELIOC(5)
 
+<<<<<<< HEAD
+=======
+/** get the accel scaling constants into the structure pointed to by (arg) */
+#define ACCELIOCGSCALE		_ACCELIOC(6)
+
+/** set the accel measurement range to handle at least (arg) g */
+#define ACCELIOCSRANGE		_ACCELIOC(7)
+
+/** get the current accel measurement range in g */
+#define ACCELIOCGRANGE		_ACCELIOC(8)
+
+/** get the result of a sensor self-test */
+#define ACCELIOCSELFTEST	_ACCELIOC(9)
+
+/** determine if hardware is external or onboard */
+#define ACCELIOCGEXTERNAL	_ACCELIOC(12)
+
+/** get the current accel type */
+#define ACCELIOCTYPE		_ACCELIOC(13)
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 #endif /* _DRV_ACCEL_H */

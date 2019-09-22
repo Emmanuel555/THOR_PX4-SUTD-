@@ -30,7 +30,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ############################################################################
-
 px4_add_module(
 	MODULE drivers__linux_pwm_out
 	MAIN linux_pwm_out
@@ -40,7 +39,6 @@ px4_add_module(
 		navio_sysfs.cpp
 		linux_pwm_out.cpp
 		ocpoc_mmap.cpp
-		bbblue_pwm_rc.cpp
 	DEPENDS
 		pwm_limit
 	)

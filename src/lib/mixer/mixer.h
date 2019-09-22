@@ -488,12 +488,12 @@ public:
 	void			groups_required(uint32_t &groups) override;
 	unsigned set_trim(float trim) override
 	{
-		return 1;
+		return 0;
 	}
 
 	unsigned get_trim(float *trim) override
 	{
-		return 1;
+		return 0;
 	}
 
 };
@@ -896,7 +896,7 @@ public:
 
 	unsigned get_trim(float *trim) override
 	{
-		return 4;
+		return 0;
 	}
 
 private:

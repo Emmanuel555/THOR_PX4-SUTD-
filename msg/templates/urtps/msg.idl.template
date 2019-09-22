@@ -84,6 +84,7 @@ def add_msg_fields():
     for field in sorted_fields:
         add_msg_field(field)
 
+<<<<<<< HEAD
 
 def add_msg_constants():
     sorted_constants = sorted(spec.constants,
@@ -92,6 +93,9 @@ def add_msg_constants():
         constant_value = '%d' % constant.val
         print("const " + get_idl_type_name(constant.type) + " " + constant.name + " = " + constant_value + ";")
 
+=======
+        
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 }@
 #ifndef __@(spec.short_name)__idl__
 #define __@(spec.short_name)__idl__
@@ -112,6 +116,7 @@ typedef @(type + '_') @(type);
 
 struct @(spec.short_name)_
 {
+    unsigned long long timestamp;
 @add_msg_fields()
 }; // struct @(spec.short_name)_
 

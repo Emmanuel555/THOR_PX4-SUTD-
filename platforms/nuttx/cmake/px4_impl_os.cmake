@@ -69,9 +69,15 @@ function(px4_os_add_flags)
 		-D__DF_NUTTX
 		)
 
+<<<<<<< HEAD
 	if("${CONFIG_ARMV7M_STACKCHECK}" STREQUAL "y")
 		message(STATUS "NuttX Stack Checking (CONFIG_ARMV7M_STACKCHECK) enabled")
 		add_compile_options(
+=======
+
+	if("${config_nuttx_hw_stack_check_${BOARD}}" STREQUAL "y")
+		set(instrument_flags
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 			-finstrument-functions
 			-ffixed-r10
 			)
@@ -93,6 +99,7 @@ endfunction()
 #
 #	Input:
 #		BOARD		: board
+#		THREADS		: number of threads for building
 #
 #	Output:
 #		OUT	: the target list
@@ -103,8 +110,13 @@ endfunction()
 function(px4_os_prebuild_targets)
 	px4_parse_function_args(
 			NAME px4_os_prebuild_targets
+<<<<<<< HEAD
 			ONE_VALUE OUT BOARD
 			REQUIRED OUT
+=======
+			ONE_VALUE OUT BOARD THREADS
+			REQUIRED OUT BOARD
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 			ARGN ${ARGN})
 
 	if(PX4_BOARD_LABEL MATCHES "stackcheck")
@@ -118,7 +130,11 @@ function(px4_os_prebuild_targets)
 	add_dependencies(prebuild_targets DEPENDS nuttx_context uorb_headers)
 
 	# parse nuttx config options for cmake
+<<<<<<< HEAD
 	file(STRINGS ${PX4_BOARD_DIR}/nuttx-config/${NUTTX_CONFIG}/defconfig ConfigContents)
+=======
+	file(STRINGS ${PX4_SOURCE_DIR}/platforms/nuttx/nuttx-configs/${BOARD}/nsh/defconfig ConfigContents)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	foreach(NameAndValue ${ConfigContents})
 		# Strip leading spaces
 		string(REGEX REPLACE "^[ ]+" "" NameAndValue ${NameAndValue})
@@ -139,3 +155,66 @@ function(px4_os_prebuild_targets)
 		endif()
 	endforeach()
 endfunction()
+<<<<<<< HEAD
+=======
+
+#=============================================================================
+#
+#	px4_nuttx_configure
+#
+#	This function sets the nuttx configuration
+#
+#	Usage:
+#		px4_nuttx_configure(
+#	    HWCLASS <m3|m4>
+#		  [ROMFS <y|n>
+#		  ROMFSROOT <root>]
+#			)
+#
+#	Input:
+#	  HWCLASS		: the class of hardware
+#	  CONFIG		: the nuttx configuration to use
+#	  ROMFS			: whether or not to use incllude theROMFS
+#	  ROMFSROOT		: If ROMFS used set the root the default is px4fmu_common
+#
+#	Output:
+#		OUT	: None
+#
+#	Example:
+#		px4_nuttx_configure(HWCLASS m4 CONFIG nsh ROMFS y)
+#
+function(px4_nuttx_configure)
+	px4_parse_function_args(
+			NAME px4_nuttx_configure
+			ONE_VALUE HWCLASS CONFIG ROMFS ROMFSROOT IO
+			REQUIRED HWCLASS
+			ARGN ${ARGN})
+
+	# HWCLASS -> CMAKE_SYSTEM_PROCESSOR
+	if(HWCLASS STREQUAL "m7")
+		set(CMAKE_SYSTEM_PROCESSOR "cortex-m7" PARENT_SCOPE)
+	elseif(HWCLASS STREQUAL "m4")
+		set(CMAKE_SYSTEM_PROCESSOR "cortex-m4" PARENT_SCOPE)
+	elseif(HWCLASS STREQUAL "m3")
+		set(CMAKE_SYSTEM_PROCESSOR "cortex-m3" PARENT_SCOPE)
+	endif()
+	set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "system processor" FORCE)
+	set(CMAKE_TOOLCHAIN_FILE ${PX4_SOURCE_DIR}/cmake/toolchains/Toolchain-arm-none-eabi.cmake CACHE INTERNAL "toolchain file" FORCE)
+
+	# ROMFS
+	if("${ROMFS}" STREQUAL "y")
+		if (NOT DEFINED ROMFSROOT)
+			set(config_romfs_root px4fmu_common)
+		else()
+			set(config_romfs_root ${ROMFSROOT})
+		endif()
+		set(config_romfs_root ${config_romfs_root} PARENT_SCOPE)
+	endif()
+
+	# IO board placed in ROMFS
+	if(config_romfs_root)
+		set(config_io_board ${IO} PARENT_SCOPE)
+	endif()
+endfunction()
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

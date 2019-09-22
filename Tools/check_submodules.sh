@@ -67,6 +67,7 @@ then
 	# called with a path then process only that path but respect $GIT_SUBMODULES_ARE_EVIL
 	[ -n "$GIT_SUBMODULES_ARE_EVIL" ] && {
 		# GIT_SUBMODULES_ARE_EVIL is set, meaning user doesn't want submodules updated
+		echo "GIT_SUBMODULES_ARE_EVIL is defined - Skipping submodules $1 update."
 		exit 0
 	}
 

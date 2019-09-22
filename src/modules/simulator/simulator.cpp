@@ -144,6 +144,11 @@ void Simulator::parameters_update(bool force)
 
 int Simulator::start(int argc, char *argv[])
 {
+<<<<<<< HEAD
+=======
+	int ret = 0;
+	int udp_port = 0;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	_instance = new Simulator();
 
 	if (_instance) {

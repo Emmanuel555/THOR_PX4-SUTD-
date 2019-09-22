@@ -116,8 +116,8 @@ type_printf_map = {
     'uint16': '%u',
     'uint32': '%" PRIu32 "',
     'uint64': '%" PRIu64 "',
-    'float32': '%.4f',
-    'float64': '%.6f',
+    'float32': '%.3f',
+    'float64': '%.3f',
     'bool': '%u',
     'char': '%c',
 }
@@ -161,8 +161,13 @@ def add_padding_bytes(fields, search_path):
     struct size
     returns a tuple with the struct size and padding at the end
     """
+<<<<<<< HEAD
     struct_size = 0
     align_to = 8  # this is always 8, because of the 64bit timestamp
+=======
+    struct_size = 8 # account for the timestamp
+    align_to = 8 # this is always 8, because of the 64bit timestamp
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
     i = 0
     padding_idx = 0
     while i < len(fields):
@@ -254,10 +259,15 @@ def print_field(field):
 
         else:
             for i in range(array_length):
+<<<<<<< HEAD
                 print("PX4_INFO_RAW(\"\\t" + field.type +
                       " " + field.name + "[" + str(i) + "]\");")
                 print(" print_message(message." +
                       field.name + "[" + str(i) + "]);")
+=======
+                print("printf(\"\\t" + field.type + " " + field.name + "[" + str(i) + "]\");")
+                print(" print_message(message." + field.name + "[" + str(i) + "]);")
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
             return
 
         for i in range(array_length):
@@ -291,6 +301,7 @@ def print_field(field):
                 field_name = "(" + field_name + " ? \"True\" : \"False\")"
 
         else:
+<<<<<<< HEAD
             print("PX4_INFO_RAW(\"\\n\\t" + field.name + "\");")
             print("\tprint_message(message." + field.name + ");")
             return
@@ -306,6 +317,13 @@ def print_field(field):
     else:
         print("PX4_INFO_RAW(\"\\t" + field.name + ": " +
               c_type + "\\n\", " + field_name + ");")
+=======
+            print("printf(\"\\n\\t" + field.name + "\");")
+            print("\tprint_message(message."+ field.name + ");")
+            return
+
+    print("printf(\"\\t" + field.name + ": " + c_type + "\\n\", " + field_name + ");" )
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 
 def print_field_def(field):

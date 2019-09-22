@@ -29,22 +29,31 @@ then
 	param set MC_PITCHRATE_D 0.004
 	param set MC_YAW_P 4
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4040_reaper
 	param set NAV_ACC_RAD 2
+=======
+	param set NAV_ACC_RAD 2.0
+	param set RTL_RETURN_ALT 30.0
+	param set RTL_DESCEND_ALT 10.0
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4040_reaper
 
-	param set PWM_AUX_DISARMED 950
-	param set PWM_AUX_RATE 50
 	param set PWM_MIN 1100
 	param set PWM_MAX 1900
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4040_reaper
 	param set PWM_RATE 50
 
 	param set RTL_RETURN_ALT 30
 	param set RTL_DESCEND_ALT 10
+=======
+	param set PWM_AUX_DISARMED 950
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4040_reaper
 fi
 
 set MIXER quad_h
 
+set PWM_RATE 50
 set PWM_OUT 1234
 
 set MIXER_AUX pass
-
+set PWM_AUX_RATE 50
 set PWM_AUX_OUT 1234

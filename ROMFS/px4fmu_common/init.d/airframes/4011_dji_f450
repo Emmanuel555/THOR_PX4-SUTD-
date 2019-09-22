@@ -26,8 +26,12 @@ then
 	param set MC_YAW_P 2.8
 	param set MC_YAWRATE_P 0.3
 	param set MC_YAWRATE_I 0.1
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4011_dji_f450
 	param set MC_YAWRATE_D 0
 
+=======
+	param set MC_YAWRATE_D 0.0
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4011_dji_f450
 	# DJI ESCs do not support calibration and need a higher min
 	param set PWM_MIN 1230
 fi

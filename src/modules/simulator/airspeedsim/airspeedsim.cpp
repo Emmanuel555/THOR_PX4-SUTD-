@@ -70,7 +70,7 @@
 #include "airspeedsim.h"
 
 AirspeedSim::AirspeedSim(int bus, int address, unsigned conversion_interval, const char *path) :
-	CDev(path),
+	CDev("AIRSPEEDSIM", path),
 	_reports(nullptr),
 	_retries(0),
 	_sensor_ok(false),
@@ -83,6 +83,11 @@ AirspeedSim::AirspeedSim(int bus, int address, unsigned conversion_interval, con
 	_sample_perf(perf_alloc(PC_ELAPSED, "airspeed_read")),
 	_comms_errors(perf_alloc(PC_COUNT, "airspeed_comms_errors"))
 {
+	// enable debug() calls
+	_debug_enabled = false;
+
+	// work_cancel in the dtor will explode if we don't do this...
+	memset(&_work, 0, sizeof(_work));
 }
 
 AirspeedSim::~AirspeedSim()
@@ -111,7 +116,7 @@ AirspeedSim::init()
 
 	/* init base class */
 	if (CDev::init() != OK) {
-		PX4_ERR("CDev init failed");
+		DEVICE_DEBUG("CDev init failed");
 		goto out;
 	}
 
@@ -126,7 +131,7 @@ AirspeedSim::init()
 	_class_instance = register_class_devname(AIRSPEED_BASE_DEVICE_PATH);
 
 	/* publication init */
-	if (_class_instance == 0) {
+	if (_class_instance == CLASS_DEVICE_PRIMARY) {
 
 		/* advertise sensor topic, measure manually to initialize valid report */
 		struct differential_pressure_s arp;
@@ -163,7 +168,7 @@ AirspeedSim::probe()
 }
 
 int
-AirspeedSim::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+AirspeedSim::ioctl(device::file_t *filp, int cmd, unsigned long arg)
 {
 	switch (cmd) {
 
@@ -230,7 +235,7 @@ AirspeedSim::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
 }
 
 ssize_t
-AirspeedSim::read(cdev::file_t *filp, char *buffer, size_t buflen)
+AirspeedSim::read(device::file_t *filp, char *buffer, size_t buflen)
 {
 	unsigned count = buflen / sizeof(differential_pressure_s);
 	differential_pressure_s *abuf = reinterpret_cast<differential_pressure_s *>(buffer);

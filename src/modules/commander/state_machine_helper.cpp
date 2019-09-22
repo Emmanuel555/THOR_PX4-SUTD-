@@ -92,8 +92,8 @@ void set_link_loss_nav_state(vehicle_status_s *status, actuator_armed_s *armed,
 
 void reset_link_loss_globals(actuator_armed_s *armed, const bool old_failsafe, const link_loss_actions_t link_loss_act);
 
-transition_result_t arming_state_transition(vehicle_status_s *status, const safety_s &safety,
-		const arming_state_t new_arming_state, actuator_armed_s *armed, const bool fRunPreArmChecks,
+transition_result_t arming_state_transition(vehicle_status_s *status, const battery_status_s &battery,
+		const safety_s &safety, const arming_state_t new_arming_state, actuator_armed_s *armed, const bool fRunPreArmChecks,
 		orb_advert_t *mavlink_log_pub, vehicle_status_flags_s *status_flags, const uint8_t arm_requirements,
 		const hrt_abstime &time_since_boot)
 {
@@ -166,7 +166,7 @@ transition_result_t arming_state_transition(vehicle_status_s *status, const safe
 
 					if (preflight_check_ret) {
 						// only bother running prearm if preflight was successful
-						prearm_check_ret = prearm_check(mavlink_log_pub, *status_flags, safety, arm_requirements);
+						prearm_check_ret = prearm_check(mavlink_log_pub, *status_flags, battery, safety, arm_requirements, time_since_boot);
 					}
 
 					if (!(preflight_check_ret && prearm_check_ret)) {
@@ -260,6 +260,7 @@ main_state_transition(const vehicle_status_s &status, const main_state_t new_mai
 	case commander_state_s::MAIN_STATE_MANUAL:
 	case commander_state_s::MAIN_STATE_STAB:
 	case commander_state_s::MAIN_STATE_ACRO:
+        case commander_state_s::MAIN_STATE_MONOCO:
 	case commander_state_s::MAIN_STATE_RATTITUDE:
 		ret = TRANSITION_CHANGED;
 		break;
@@ -357,7 +358,7 @@ main_state_transition(const vehicle_status_s &status, const main_state_t new_mai
 
 	case commander_state_s::MAIN_STATE_MAX:
 	default:
-		break;
+		break;   
 	}
 
 	if (ret == TRANSITION_CHANGED) {
@@ -368,6 +369,65 @@ main_state_transition(const vehicle_status_s &status, const main_state_t new_mai
 		} else {
 			ret = TRANSITION_NOT_CHANGED;
 		}
+	}
+
+	return ret;
+}
+
+/**
+ * Transition from one hil state to another
+ */
+transition_result_t hil_state_transition(hil_state_t new_state, orb_advert_t status_pub,
+		vehicle_status_s *current_status, orb_advert_t *mavlink_log_pub)
+{
+	transition_result_t ret = TRANSITION_DENIED;
+
+	if (current_status->hil_state == new_state) {
+		ret = TRANSITION_NOT_CHANGED;
+
+	} else {
+		switch (new_state) {
+		case vehicle_status_s::HIL_STATE_OFF:
+			/* The system is in HITL mode and unexpected things can happen if we disable HITL without rebooting. */
+			mavlink_log_critical(mavlink_log_pub, "Set SYS_HITL to 0 and reboot to disable HITL.");
+			ret = TRANSITION_DENIED;
+			break;
+
+		case vehicle_status_s::HIL_STATE_ON:
+			if (current_status->arming_state == vehicle_status_s::ARMING_STATE_INIT
+			    || current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY
+			    || current_status->arming_state == vehicle_status_s::ARMING_STATE_STANDBY_ERROR) {
+
+				ret = TRANSITION_CHANGED;
+
+				int32_t hitl_on = 0;
+				param_get(param_find("SYS_HITL"), &hitl_on);
+
+				if (hitl_on) {
+					mavlink_log_info(mavlink_log_pub, "Enabled Hardware-in-the-loop simulation (HITL).");
+
+				} else {
+					mavlink_log_critical(mavlink_log_pub, "Set SYS_HITL to 1 and reboot to enable HITL.");
+					ret = TRANSITION_DENIED;
+				}
+
+			} else {
+				mavlink_log_critical(mavlink_log_pub, "Not switching to HITL when armed.");
+				ret = TRANSITION_DENIED;
+			}
+
+			break;
+
+		default:
+			PX4_WARN("Unknown HITL state");
+			break;
+		}
+	}
+
+	if (ret == TRANSITION_CHANGED) {
+		current_status->hil_state = new_state;
+		current_status->timestamp = hrt_absolute_time();
+		orb_publish(ORB_ID(vehicle_status), status_pub, current_status);
 	}
 
 	return ret;
@@ -415,6 +475,7 @@ bool set_nav_state(vehicle_status_s *status, actuator_armed_s *armed, commander_
 	case commander_state_s::MAIN_STATE_RATTITUDE:
 	case commander_state_s::MAIN_STATE_STAB:
 	case commander_state_s::MAIN_STATE_ALTCTL:
+        case commander_state_s::MAIN_STATE_MONOCO:
 
 		/* require RC for all manual modes */
 		if (rc_lost && is_armed) {
@@ -444,6 +505,10 @@ bool set_nav_state(vehicle_status_s *status, actuator_armed_s *armed, commander_
 			case commander_state_s::MAIN_STATE_ALTCTL:
 				status->nav_state = vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 				break;
+
+                        case commander_state_s::MAIN_STATE_MONOCO:
+                                status->nav_state = vehicle_status_s::NAVIGATION_STATE_MONOCO;
+                                break;
 
 			default:
 				status->nav_state = vehicle_status_s::NAVIGATION_STATE_MANUAL;
@@ -891,8 +956,9 @@ void reset_link_loss_globals(actuator_armed_s *armed, const bool old_failsafe, c
 	}
 }
 
-bool prearm_check(orb_advert_t *mavlink_log_pub, const vehicle_status_flags_s &status_flags, const safety_s &safety,
-		  const uint8_t arm_requirements)
+bool prearm_check(orb_advert_t *mavlink_log_pub, const vehicle_status_flags_s &status_flags,
+		  const battery_status_s &battery, const safety_s &safety, const uint8_t arm_requirements,
+		  const hrt_abstime &time_since_boot)
 {
 	bool reportFailures = true;
 	bool prearm_ok = true;
@@ -919,9 +985,9 @@ bool prearm_check(orb_advert_t *mavlink_log_pub, const vehicle_status_flags_s &s
 		}
 
 		// main battery level
-		if (!status_flags.condition_battery_healthy) {
+		if (battery.warning >= battery_status_s::BATTERY_WARNING_LOW) {
 			if (prearm_ok && reportFailures) {
-				mavlink_log_critical(mavlink_log_pub, "ARMING DENIED: CHECK BATTERY");
+				mavlink_log_critical(mavlink_log_pub, "ARMING DENIED: LOW BATTERY");
 			}
 
 			prearm_ok = false;
@@ -981,6 +1047,7 @@ bool prearm_check(orb_advert_t *mavlink_log_pub, const vehicle_status_flags_s &s
 
 	return prearm_ok;
 }
+<<<<<<< HEAD
 
 
 void battery_failsafe(orb_advert_t *mavlink_log_pub, const vehicle_status_s &status,
@@ -1076,3 +1143,5 @@ void battery_failsafe(orb_advert_t *mavlink_log_pub, const vehicle_status_s &sta
 		break;
 	}
 }
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

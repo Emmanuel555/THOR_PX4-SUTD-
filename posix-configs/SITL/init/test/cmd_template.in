@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 #!/bin/sh
 # PX4 commands need the 'px4-' prefix in bash.
 # (px4-alias.sh is expected to be in the PATH)
 . px4-alias.sh
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 uorb start
 
 param load
@@ -21,6 +24,11 @@ pwm_out_sim start
 
 ver all
 
+list_tasks
+list_devices
+list_topics
+list_files
+
 mavlink start -x -u 14556 -r 2000000
 mavlink boot_complete
 
@@ -31,5 +39,6 @@ sleep 1
 @cmd_name@ stop
 
 dataman status
+dataman stop
 
 shutdown

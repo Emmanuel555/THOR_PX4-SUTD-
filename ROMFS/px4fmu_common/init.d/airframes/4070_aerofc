@@ -24,6 +24,7 @@ then
 	# Set all params here, then disable autoconfig
 
 	param set COM_DISARM_LAND 3
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4070_aerofc
 
 	param set EKF2_GPS_POS_X -0.0600
 	param set EKF2_GPS_POS_Z -0.1000
@@ -32,6 +33,8 @@ then
 	param set EKF2_BARO_GATE 10
 	param set EKF2_BARO_NOISE 5
 	param set EKF2_ACC_NOISE 0.7
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4070_aerofc
 
 	param set LNDMC_Z_VEL_MAX 2.0000
 
@@ -64,11 +67,23 @@ then
 	param set MPC_Z_VEL_MAX_UP 5.0000
 	param set MPC_Z_VEL_P 0.8000
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4070_aerofc
 	# TELEM2 config
 	param set MAV_1_CONFIG 102
 	param set MAV_1_RATE 80000
 	param set MAV_1_FORWARD 1
 	param set SER_TEL2_BAUD 921600
+=======
+	param set EKF2_GPS_POS_X -0.0600
+	param set EKF2_GPS_POS_Z -0.1000
+	param set EKF2_MIN_OBS_DT 50
+
+	param set EKF2_BARO_GATE 10.0
+	param set EKF2_BARO_NOISE 5.0
+	param set EKF2_ACC_NOISE 0.7
+
+	param set SYS_LOGGER 1
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4070_aerofc
 fi
 
 if param compare SYS_HITL 0
@@ -82,3 +97,8 @@ fi
 set MIXER quad_x
 set USE_IO no
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4070_aerofc
+=======
+param set SYS_COMPANION 921600
+set MAVLINK_COMPANION_DEVICE /dev/ttyS1
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4070_aerofc

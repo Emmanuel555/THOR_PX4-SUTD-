@@ -82,7 +82,7 @@ int test_uart_loopback(int argc, char *argv[])
 		}
 
 		printf("ERROR opening UART5, aborting..\n");
-		return 1;
+		exit(uart5);
 	}
 
 	uint8_t sample_stdout_fd[] = {'C', 'O', 'U', 'N', 'T', ' ', '#', '\n'};

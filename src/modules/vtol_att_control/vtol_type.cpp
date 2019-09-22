@@ -55,9 +55,10 @@ VtolType::VtolType(VtolAttitudeControl *att_controller) :
 	_mc_virtual_att_sp = _attc->get_mc_virtual_att_sp();
 	_fw_virtual_att_sp = _attc->get_fw_virtual_att_sp();
 	_v_control_mode = _attc->get_control_mode();
-	_vtol_vehicle_status = _attc->get_vtol_vehicle_status();
+        _vtol_vehicle_status = _attc->get_vtol_vehicle_status();
 	_actuators_out_0 = _attc->get_actuators_out0();
 	_actuators_out_1 = _attc->get_actuators_out1();
+        _manual_control_sp = _attc->get_rc_manual_in();
 	_actuators_mc_in = _attc->get_actuators_mc_in();
 	_actuators_fw_in = _attc->get_actuators_fw_in();
 	_local_pos = _attc->get_local_pos();
@@ -124,7 +125,28 @@ void VtolType::update_mc_state()
 	_mc_roll_weight = 1.0f;
 	_mc_pitch_weight = 1.0f;
 	_mc_yaw_weight = 1.0f;
+<<<<<<< HEAD
 	_mc_throttle_weight = 1.0f;
+=======
+
+	// VTOL weathervane
+	_v_att_sp->disable_mc_yaw_control = false;
+
+	if (_attc->get_pos_sp_triplet()->current.valid &&
+	    !_v_control_mode->flag_control_manual_enabled) {
+
+		if (_params->wv_takeoff && _attc->get_pos_sp_triplet()->current.type == position_setpoint_s::SETPOINT_TYPE_TAKEOFF) {
+			_v_att_sp->disable_mc_yaw_control = true;
+
+		} else if (_params->wv_loiter
+			   && _attc->get_pos_sp_triplet()->current.type == position_setpoint_s::SETPOINT_TYPE_LOITER) {
+			_v_att_sp->disable_mc_yaw_control = true;
+
+		} else if (_params->wv_land && _attc->get_pos_sp_triplet()->current.type == position_setpoint_s::SETPOINT_TYPE_LAND) {
+			_v_att_sp->disable_mc_yaw_control = true;
+		}
+	}
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 }
 
 void VtolType::update_fw_state()
@@ -193,8 +215,8 @@ void VtolType::check_quadchute_condition()
 			// We use tecs for tracking in FW and local_pos_sp during transitions
 			if (_tecs_running) {
 				// 1 second rolling average
-				_ra_hrate = (49 * _ra_hrate + _tecs_status->height_rate) / 50;
-				_ra_hrate_sp = (49 * _ra_hrate_sp + _tecs_status->height_rate_setpoint) / 50;
+				_ra_hrate = (49 * _ra_hrate + _tecs_status->flight_path_angle) / 50;
+				_ra_hrate_sp = (49 * _ra_hrate_sp + _tecs_status->flight_path_angle_sp) / 50;
 
 				// are we dropping while requesting significant ascend?
 				if (((_tecs_status->altitude_sp - _tecs_status->altitude_filtered) > _params->fw_alt_err) &&

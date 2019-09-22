@@ -24,9 +24,13 @@ sh /etc/init.d/rc.mc_defaults
 
 if [ $AUTOCNF = yes ]
 then
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/10017_steadidrone_qu4d
 	param set BAT_N_CELLS 4
 
 	param set MC_ROLL_P 7
+=======
+	param set MC_ROLL_P 7.0
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/10017_steadidrone_qu4d
 	param set MC_ROLLRATE_P 0.13
 	param set MC_ROLLRATE_I 0.05
 	param set MC_ROLLRATE_D 0.004
@@ -37,7 +41,13 @@ then
 	param set MC_YAW_P 4
 	param set MC_YAWRATE_P 0.2
 	param set MC_YAWRATE_I 0.1
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/10017_steadidrone_qu4d
 	param set MC_YAWRATE_D 0
+=======
+	param set MC_YAWRATE_D 0.0
+
+	param set BAT_N_CELLS 4
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/10017_steadidrone_qu4d
 fi
 
 set MIXER quad_w

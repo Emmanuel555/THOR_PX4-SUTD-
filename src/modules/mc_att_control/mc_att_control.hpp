@@ -264,6 +264,7 @@ private:
 		(ParamFloat<px4::params::SENS_BOARD_Y_OFF>) _board_offset_y,
 		(ParamFloat<px4::params::SENS_BOARD_Z_OFF>) _board_offset_z,
 
+<<<<<<< HEAD
 		/* Stabilized mode params */
 		(ParamFloat<px4::params::MPC_MAN_TILT_MAX>) _man_tilt_max_deg,			/**< maximum tilt allowed for manual flight */
 		(ParamFloat<px4::params::MPC_MANTHR_MIN>) _man_throttle_min,			/**< minimum throttle for stabilized */
@@ -272,6 +273,9 @@ private:
 		(ParamInt<px4::params::MPC_THR_CURVE>) _throttle_curve,				/**< throttle curve behavior */
 
 		(ParamInt<px4::params::MC_AIRMODE>) _airmode
+=======
+		(ParamFloat<px4::params::VT_WV_YAWR_SCL>) _vtol_wv_yaw_rate_scale		/**< Scale value [0, 1] for yaw rate setpoint  */
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	)
 
 	matrix::Vector3f _attitude_p;		/**< P gain for attitude control */

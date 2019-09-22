@@ -35,8 +35,7 @@ set(srcs
 	test_adc.c
 	test_autodeclination.cpp
 	test_bezierQuad.cpp
-	test_bson.cpp
-	test_controlmath.cpp
+	test_bson.c
 	test_conv.cpp
 	test_dataman.c
 	test_file.c
@@ -65,12 +64,13 @@ set(srcs
 	test_sensors.c
 	test_servo.c
 	test_sleep.c
-	test_smooth_z.cpp
 	test_uart_baudchange.c
 	test_uart_console.c
 	test_uart_loopback.c
 	test_uart_send.c
 	test_versioning.cpp
+	test_smooth_z.cpp
+	test_controlmath.cpp
 	tests_main.c
 	)
 
@@ -85,15 +85,15 @@ px4_add_module(
 	MODULE systemcmds__tests
 	MAIN tests
 	STACK_MAIN 10000
+	STACK_MAX 10000
 	COMPILE_FLAGS
-		-Wno-double-promotion
+		-Wno-sign-compare # TODO: fix all sign-compare
+		-Wno-unused-result
 		-Wno-float-equal
 		-Wno-missing-declarations
-		-Wno-sign-compare # TODO: fix all sign-compare
+		-Wno-double-promotion
 		-Wno-unknown-warning-option
 		-Wno-unused-but-set-variable
-		-Wno-unused-result
-		-Wno-unused-variable
 	SRCS
 		${srcs}
 	DEPENDS

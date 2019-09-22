@@ -256,6 +256,61 @@ BMI055_gyro::self_test()
 	return (perf_event_count(_sample_perf) > 0) ? 0 : 1;
 }
 
+int
+BMI055_gyro::gyro_self_test()
+{
+	if (self_test()) {
+		return 1;
+	}
+
+	/*
+	 * Maximum deviation of 10 degrees
+	 */
+	const float max_offset = (float)(10 * M_PI_F / 180.0f);
+	/* 30% scale error is chosen to catch completely faulty units but
+	 * to let some slight scale error pass. Requires a rate table or correlation
+	 * with mag rotations + data fit to
+	 * calibrate properly and is not done by default.
+	 */
+	const float max_scale = 0.3f;
+
+	/* evaluate gyro offsets, complain if offset -> zero or larger than 30 dps. */
+	if (fabsf(_gyro_scale.x_offset) > max_offset) {
+		return 1;
+	}
+
+	/* evaluate gyro scale, complain if off by more than 30% */
+	if (fabsf(_gyro_scale.x_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.y_offset) > max_offset) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.y_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.z_offset) > max_offset) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.z_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	/* check if all scales are zero */
+	if ((fabsf(_gyro_scale.x_offset) < 0.000001f) &&
+	    (fabsf(_gyro_scale.y_offset) < 0.000001f) &&
+	    (fabsf(_gyro_scale.z_offset) < 0.000001f)) {
+		/* if all are zero, this device is not calibrated */
+		return 1;
+	}
+
+	return 0;
+}
+
 /*
   deliberately trigger an error in the sensor to trigger recovery
  */
@@ -370,6 +425,23 @@ BMI055_gyro::ioctl(struct file *filp, int cmd, unsigned long arg)
 		memcpy(&_gyro_scale, (struct gyro_calibration_s *) arg, sizeof(_gyro_scale));
 		return OK;
 
+<<<<<<< HEAD
+=======
+	case GYROIOCGSCALE:
+		/* copy scale out */
+		memcpy((struct gyro_calibration_s *) arg, &_gyro_scale, sizeof(_gyro_scale));
+		return OK;
+
+	case GYROIOCSRANGE:
+		return set_gyro_range(arg);
+
+	case GYROIOCGRANGE:
+		return (unsigned long)(_gyro_range_rad_s * 180.0f / M_PI_F + 0.5f);
+
+	case GYROIOCSELFTEST:
+		return gyro_self_test();
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	default:
 		/* give it to the superclass */
 		return SPI::ioctl(filp, cmd, arg);

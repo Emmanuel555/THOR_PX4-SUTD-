@@ -22,13 +22,17 @@
 
 sh /etc/init.d/rc.mc_defaults
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/4002_quad_x_mount
 if [ $AUTOCNF = yes ]
 then
 	param set PWM_AUX_RATE 50
 fi
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/4002_quad_x_mount
 set MIXER quad_x
 set PWM_OUT 1234
 
 set MIXER_AUX mount
 set PWM_AUX_OUT 123456
+set PWM_AUX_RATE 50

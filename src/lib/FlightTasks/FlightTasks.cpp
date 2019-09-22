@@ -47,6 +47,7 @@ const vehicle_constraints_s FlightTasks::getConstraints()
 	}
 }
 
+<<<<<<< HEAD
 const landing_gear_s FlightTasks::getGear()
 {
 	if (isAnyTaskActive()) {
@@ -58,18 +59,73 @@ const landing_gear_s FlightTasks::getGear()
 }
 
 const vehicle_trajectory_waypoint_s FlightTasks::getAvoidanceWaypoint()
+=======
+int FlightTasks::_initTask(FlightTaskIndex task_index)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 {
-	if (isAnyTaskActive()) {
-		return _current_task.task->getAvoidanceWaypoint();
 
-	} else {
-		return FlightTask::empty_trajectory_waypoint;
+	// disable the old task if there is any
+	if (_current_task.task) {
+		_current_task.task->~FlightTask();
+		_current_task.task = nullptr;
+		_current_task.index = FlightTaskIndex::None;
 	}
-}
 
-const vehicle_trajectory_waypoint_s &FlightTasks::getEmptyAvoidanceWaypoint()
-{
-	return FlightTask::empty_trajectory_waypoint;
+	switch (task_index) {
+	case FlightTaskIndex::None:
+		// already disabled task
+		break;
+
+	case FlightTaskIndex::Stabilized:
+		_current_task.task = new (&_task_union.stabilized) FlightTaskManualStabilized();
+		break;
+
+	case FlightTaskIndex::Altitude:
+		_current_task.task = new (&_task_union.altitude) FlightTaskManualAltitude();
+		break;
+
+	case FlightTaskIndex::AltitudeSmooth:
+		_current_task.task = new (&_task_union.altitude_smooth) FlightTaskManualAltitudeSmooth();
+		break;
+
+	case FlightTaskIndex::Position:
+		_current_task.task = new (&_task_union.position) FlightTaskManualPosition();
+		break;
+
+	case FlightTaskIndex::PositionSmooth:
+		_current_task.task =
+			new (&_task_union.position_smooth) FlightTaskManualPositionSmooth();
+		break;
+
+	case FlightTaskIndex::Orbit:
+		_current_task.task = new (&_task_union.orbit) FlightTaskOrbit();
+		break;
+
+	case FlightTaskIndex::Sport:
+		_current_task.task = new (&_task_union.sport) FlightTaskSport();
+		break;
+
+	case FlightTaskIndex::AutoLine:
+		_current_task.task = new (&_task_union.autoLine) FlightTaskAutoLine();
+		break;
+
+	case FlightTaskIndex::AutoFollowMe:
+		_current_task.task =
+			new (&_task_union.autoFollowMe) FlightTaskAutoFollowMe();
+		break;
+
+	case FlightTaskIndex::Offboard:
+		_current_task.task = new (&_task_union.offboard) FlightTaskOffboard();
+		break;
+
+	default:
+		// invalid task
+		return 1;
+	}
+
+	// task construction succeeded
+	_current_task.index = task_index;
+	return 0;
 }
 
 int FlightTasks::switchTask(FlightTaskIndex new_task_index)
@@ -167,11 +223,15 @@ void FlightTasks::_updateCommand()
 	orb_copy(ORB_ID(vehicle_command), _sub_vehicle_command, &command);
 
 	// check what command it is
-	FlightTaskIndex desired_task = switchVehicleCommand(command.command);
+	FlightTaskIndex desired_task = FlightTaskIndex::None;
 
-	if (desired_task == FlightTaskIndex::None) {
-		// ignore all unkown commands
-		return;
+	switch (command.command) {
+	case vehicle_command_s::VEHICLE_CMD_DO_ORBIT :
+		desired_task = FlightTaskIndex::Orbit;
+		break;
+
+	// ignore all unkown commands
+	default : return;
 	}
 
 	// switch to the commanded task
@@ -188,7 +248,7 @@ void FlightTasks::_updateCommand()
 
 			// if we just switched and parameters are not accepted, go to failsafe
 			if (switch_result == 1) {
-				switchTask(FlightTaskIndex::ManualPosition);
+				switchTask(FlightTaskIndex::Position);
 				cmd_result = vehicle_command_ack_s::VEHICLE_RESULT_FAILED;
 			}
 		}

@@ -17,8 +17,9 @@
 # @board px4_fmu-v2 exclude
 #
 
-sh /etc/init.d/rc.ugv_defaults
+sh /etc/init.d/rc.axialracing_ax10_defaults
 
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/50001_axialracing_ax10
 #
 # This section can be enabled once tuning parameters for this particular
 # rover model are known. It allows to configure default gains via the GUI.
@@ -36,3 +37,7 @@ then
 fi
 
 set MIXER IO_pass
+=======
+#choose a mixer, for rover control we need a plain passthrough to the servos
+set MIXER IO_pass
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/50001_axialracing_ax10

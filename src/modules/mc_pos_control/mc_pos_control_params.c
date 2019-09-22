@@ -711,6 +711,7 @@ PARAM_DEFINE_FLOAT(MPC_IDLE_TKO, 0.0f);
  * @group Multicopter Position Control
  */
 PARAM_DEFINE_INT32(MPC_OBS_AVOID, 0);
+<<<<<<< HEAD
 
 /**
  * Yaw mode.
@@ -727,3 +728,5 @@ PARAM_DEFINE_INT32(MPC_OBS_AVOID, 0);
  */
 PARAM_DEFINE_INT32(MPC_YAW_MODE, 0);
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

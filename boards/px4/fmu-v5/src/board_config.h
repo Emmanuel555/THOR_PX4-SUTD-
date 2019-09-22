@@ -348,7 +348,7 @@
 /* HEATER
  * PWM in future
  */
-#define GPIO_HEATER_OUTPUT   /* PA7  T14CH1 */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN7)
+#define GPIO_HEATER        /* PA7  T14CH1 */ (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN7)
 
 /* PWM Capture
  *
@@ -670,16 +670,10 @@
 		PX4_ADC_GPIO,                     \
 		GPIO_HW_REV_DRIVE,                \
 		GPIO_HW_VER_DRIVE,                \
-		GPIO_CAN1_TX,                     \
-		GPIO_CAN1_RX,                     \
-		GPIO_CAN2_TX,                     \
-		GPIO_CAN2_RX,                     \
-		GPIO_CAN3_TX,                     \
-		GPIO_CAN3_RX,                     \
 		GPIO_CAN1_SILENT_S0,              \
 		GPIO_CAN2_SILENT_S1,              \
 		GPIO_CAN3_SILENT_S2,              \
-		GPIO_HEATER_OUTPUT,               \
+		GPIO_HEATER,                      \
 		GPIO_nPOWER_IN_A,                 \
 		GPIO_nPOWER_IN_B,                 \
 		GPIO_nPOWER_IN_C,                 \

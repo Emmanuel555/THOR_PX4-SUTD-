@@ -327,17 +327,35 @@ MPU9250::init()
 		if (accel_cut_ph != PARAM_INVALID && (param_get(accel_cut_ph, &accel_cut) == PX4_OK)) {
 			PX4_INFO("accel cutoff set to %.2f Hz", double(accel_cut));
 
+<<<<<<< HEAD
 			_accel_filter_x.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
 			_accel_filter_y.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
 			_accel_filter_z.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
+=======
+	if (accel_cut_ph != PARAM_INVALID && (param_get(accel_cut_ph, &accel_cut) == PX4_OK)) {
+		PX4_INFO("accel cutoff set to %.2f Hz", double(accel_cut));
+
+		_accel_filter_x.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
+		_accel_filter_y.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
+		_accel_filter_z.set_cutoff_frequency(MPU9250_ACCEL_DEFAULT_RATE, accel_cut);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 		}
 
 		param_t gyro_cut_ph = param_find("IMU_GYRO_CUTOFF");
 		float gyro_cut = MPU9250_GYRO_DEFAULT_DRIVER_FILTER_FREQ;
 
+<<<<<<< HEAD
 		if (gyro_cut_ph != PARAM_INVALID && (param_get(gyro_cut_ph, &gyro_cut) == PX4_OK)) {
 			PX4_INFO("gyro cutoff set to %.2f Hz", double(gyro_cut));
+=======
+	if (gyro_cut_ph != PARAM_INVALID && (param_get(gyro_cut_ph, &gyro_cut) == PX4_OK)) {
+		PX4_INFO("gyro cutoff set to %.2f Hz", double(gyro_cut));
+
+		_gyro_filter_x.set_cutoff_frequency(MPU9250_GYRO_DEFAULT_RATE, gyro_cut);
+		_gyro_filter_y.set_cutoff_frequency(MPU9250_GYRO_DEFAULT_RATE, gyro_cut);
+		_gyro_filter_z.set_cutoff_frequency(MPU9250_GYRO_DEFAULT_RATE, gyro_cut);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 			_gyro_filter_x.set_cutoff_frequency(MPU9250_GYRO_DEFAULT_RATE, gyro_cut);
 			_gyro_filter_y.set_cutoff_frequency(MPU9250_GYRO_DEFAULT_RATE, gyro_cut);
@@ -728,6 +746,65 @@ MPU9250::_set_pollrate(unsigned long rate)
 	}
 }
 
+int
+MPU9250::accel_self_test()
+{
+	if (self_test()) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int
+MPU9250::gyro_self_test()
+{
+	if (self_test()) {
+		return 1;
+	}
+
+	/*
+	 * Maximum deviation of 20 degrees, according to
+	 * http://www.invensense.com/mems/gyro/documents/PS-MPU-9250A-00v3.4.pdf
+	 * Section 6.1, initial ZRO tolerance
+	 */
+	const float max_offset = 0.34f;
+	/* 30% scale error is chosen to catch completely faulty units but
+	 * to let some slight scale error pass. Requires a rate table or correlation
+	 * with mag rotations + data fit to
+	 * calibrate properly and is not done by default.
+	 */
+	const float max_scale = 0.3f;
+
+	/* evaluate gyro offsets, complain if offset -> zero or larger than 20 dps. */
+	if (fabsf(_gyro_scale.x_offset) > max_offset) {
+		return 1;
+	}
+
+	/* evaluate gyro scale, complain if off by more than 30% */
+	if (fabsf(_gyro_scale.x_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.y_offset) > max_offset) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.y_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.z_offset) > max_offset) {
+		return 1;
+	}
+
+	if (fabsf(_gyro_scale.z_scale - 1.0f) > max_scale) {
+		return 1;
+	}
+
+	return 0;
+}
+
 /*
   set the DLPF filter frequency. This affects both accel and gyro.
  */
@@ -863,8 +940,17 @@ MPU9250::_set_dlpf_filter(uint16_t frequency_hz)
 			filter = ICM_BITS_ACCEL_DLPF_CFG_473HZ;
 		}
 
+<<<<<<< HEAD
 		write_checked_reg(ICMREG_20948_ACCEL_CONFIG, filter);
 		break;
+=======
+	case ACCELIOCSELFTEST:
+		return accel_self_test();
+
+	default:
+		/* give it to the superclass */
+		return CDev::ioctl(filp, cmd, arg);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	}
 }
 
@@ -910,8 +996,20 @@ MPU9250::select_register_bank(uint8_t bank)
 		PX4_DEBUG("SELECT FAILED %d %d %d %d", retries, _selected_bank, bank, buf);
 		return PX4_ERROR;
 
+<<<<<<< HEAD
 	} else {
 		return PX4_OK;
+=======
+	case GYROIOCGRANGE:
+		return (unsigned long)(_gyro_range_rad_s * 180.0f / M_PI_F + 0.5f);
+
+	case GYROIOCSELFTEST:
+		return gyro_self_test();
+
+	default:
+		/* give it to the superclass */
+		return CDev::ioctl(filp, cmd, arg);
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	}
 }
 
@@ -1550,7 +1648,39 @@ MPU9250::print_info()
 	perf_print_counter(_good_transfers);
 	perf_print_counter(_reset_retries);
 	perf_print_counter(_duplicates);
+<<<<<<< HEAD
 	::printf("temperature: %.1f\n", (double)_last_temperature);
+=======
+	_accel_reports->print_info("accel queue");
+	_gyro_reports->print_info("gyro queue");
+	_mag->_mag_reports->print_info("mag queue");
+	::printf("checked_next: %u\n", _checked_next);
+
+	for (uint8_t i = 0; i < MPU9250_NUM_CHECKED_REGISTERS; i++) {
+		uint8_t v = read_reg(_checked_registers[i], MPU9250_HIGH_BUS_SPEED);
+
+		if (v != _checked_values[i]) {
+			::printf("reg %02x:%02x should be %02x\n",
+				 (unsigned)_checked_registers[i],
+				 (unsigned)v,
+				 (unsigned)_checked_values[i]);
+		}
+
+		if (v != _checked_bad[i]) {
+			::printf("reg %02x:%02x was bad %02x\n",
+				 (unsigned)_checked_registers[i],
+				 (unsigned)v,
+				 (unsigned)_checked_bad[i]);
+		}
+	}
+
+	::printf("temperature: %.1f\n", (double)_last_temperature);
+	float accel_cut = _accel_filter_x.get_cutoff_freq();
+	::printf("accel cutoff set to %10.2f Hz\n", double(accel_cut));
+	float gyro_cut = _gyro_filter_x.get_cutoff_freq();
+	::printf("gyro cutoff set to %10.2f Hz\n", double(gyro_cut));
+}
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 	if (!_magnetometer_only) {
 		_accel_reports->print_info("accel queue");

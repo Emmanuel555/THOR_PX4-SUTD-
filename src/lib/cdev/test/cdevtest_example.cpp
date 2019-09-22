@@ -44,13 +44,19 @@
 #include <px4_tasks.h>
 #include <px4_time.h>
 #include <drivers/drv_device.h>
-#include <lib/cdev/CDev.hpp>
+#include <drivers/device/device.h>
 #include <unistd.h>
 #include <stdio.h>
 
 px4::AppState CDevExample::appState;
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 #define TESTDEV "/dev/cdevtest"
+=======
+using namespace device;
+
+#define TESTDEV "/dev/vdevtest"
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 
 static bool g_exit = false;
 
@@ -98,27 +104,39 @@ public:
 	size_t _read_offset;
 };
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 class CDevNode : public cdev::CDev
 {
 public:
 	CDevNode() :
 		CDev(TESTDEV),
+=======
+class VCDevNode : public CDev
+{
+public:
+	VCDevNode() :
+		CDev("vcdevtest", TESTDEV),
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 		_is_open_for_write(false),
 		_write_offset(0) {}
 
 	~CDevNode() = default;
 
-	virtual int open(cdev::file_t *handlep);
-	virtual int close(cdev::file_t *handlep);
-	virtual ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen);
-	virtual ssize_t read(cdev::file_t *handlep, char *buffer, size_t buflen);
+	virtual int open(device::file_t *handlep);
+	virtual int close(device::file_t *handlep);
+	virtual ssize_t write(device::file_t *handlep, const char *buffer, size_t buflen);
+	virtual ssize_t read(device::file_t *handlep, char *buffer, size_t buflen);
 private:
 	bool _is_open_for_write;
 	size_t _write_offset;
 	char     _buf[1000];
 };
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 int CDevNode::open(cdev::file_t *handlep)
+=======
+int VCDevNode::open(device::file_t *handlep)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 {
 	// Only allow one writer
 	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
@@ -141,7 +159,11 @@ int CDevNode::open(cdev::file_t *handlep)
 	return 0;
 }
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 int CDevNode::close(cdev::file_t *handlep)
+=======
+int VCDevNode::close(device::file_t *handlep)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 {
 	delete (PrivData *)handlep->f_priv;
 	handlep->f_priv = nullptr;
@@ -155,7 +177,11 @@ int CDevNode::close(cdev::file_t *handlep)
 	return 0;
 }
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
+=======
+ssize_t VCDevNode::write(device::file_t *handlep, const char *buffer, size_t buflen)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 {
 	for (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
 		_buf[_write_offset] = buffer[i];
@@ -168,7 +194,11 @@ ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen
 	return buflen;
 }
 
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
+=======
+ssize_t VCDevNode::read(device::file_t *handlep, char *buffer, size_t buflen)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 {
 	PrivData *p = (PrivData *)handlep->f_priv;
 	ssize_t chars_read = 0;
@@ -263,8 +293,29 @@ int CDevExample::main()
 	int fd = px4_open(TESTDEV, PX4_F_RDONLY);
 
 	if (fd < 0) {
+<<<<<<< HEAD:src/lib/cdev/test/cdevtest_example.cpp
 		PX4_INFO("Open failed %d", fd);
 		return PX4_ERROR;
+=======
+		PX4_INFO("Open failed %d %d", fd, px4_errno);
+		return -px4_errno;
+	}
+
+	void *p = nullptr;
+	int ret = px4_ioctl(fd, DIOC_GETPRIV, (unsigned long)&p);
+
+	if (ret < 0) {
+		PX4_INFO("ioctl DIOC_GETPRIV failed %d %d", ret, px4_errno);
+		return -px4_errno;
+	}
+
+	PX4_INFO("priv data = %p %s", p, p == (void *)_node ? "PASS" : "FAIL");
+
+	ret = test_pub_block(fd, 1);
+
+	if (ret < 0) {
+		return ret;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:src/platforms/posix/tests/vcdev_test/vcdevtest_example.cpp
 	}
 
 	// Start a task that will write something in 4 seconds

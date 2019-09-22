@@ -41,9 +41,13 @@ px4_add_module(
 		Utility/ControlMath.cpp
 	DEPENDS
 		controllib
-		FlightTasks
+		flight_tasks
 		git_ecl
 		ecl_geo
+<<<<<<< HEAD
 		WeatherVane
 		CollisionPrevention
 	)
+=======
+	)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

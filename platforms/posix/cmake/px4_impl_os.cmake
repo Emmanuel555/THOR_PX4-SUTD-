@@ -102,6 +102,7 @@ function(px4_posix_generate_builtin_commands)
 	configure_file(${PX4_SOURCE_DIR}/src/platforms/apps.h.in ${OUT}.h)
 endfunction()
 
+<<<<<<< HEAD
 
 #=============================================================================
 #
@@ -203,6 +204,8 @@ function(px4_posix_generate_symlinks)
 endfunction()
 
 
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 #=============================================================================
 #
 #	px4_os_add_flags
@@ -291,6 +294,7 @@ function(px4_os_add_flags)
 			-D__PX4_LINUX
 			-D__PX4_POSIX_OCPOC # TODO: remove
 
+<<<<<<< HEAD
 			# For DriverFramework
 			-D__DF_LINUX
 			-D__DF_OCPOC
@@ -318,6 +322,19 @@ function(px4_os_add_flags)
 		#   b) install robotcontrol.h and rc/* into $LIBROBOTCONTROL_INSTALL_DIR/include
 		#   c) install pre-built native (ARM) version of librobotcontrol.* into $LIBROBOTCONTROL_INSTALL_DIR/lib
 		add_compile_options(-I${LIBROBOTCONTROL_INSTALL_DIR}/include)
+=======
+			list(APPEND added_c_flags ${CLANG_COMPILE_FLAGS})
+			list(APPEND added_cxx_flags ${CLANG_COMPILE_FLAGS})
+			list(APPEND added_exe_linker_flags ${POSIX_CMAKE_EXE_LINKER_FLAGS} ${CLANG_COMPILE_FLAGS}
+				-B${CXX_COMPILER_PATH}/arm-linux-gnueabihf/libc/usr/lib
+				-L${CXX_COMPILER_PATH}/arm-linux-gnueabihf/libc/usr/lib
+			)
+		ENDIF()
+	elseif ("${BOARD}" STREQUAL "bebop")
+		# TODO: Wmissing-field-initializers ignored on older toolchain, can be removed eventually
+		list(APPEND added_cxx_flags -Wno-missing-field-initializers)
+	endif()
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${LIBROBOTCONTROL_INSTALL_DIR}/lib")
 
@@ -338,7 +355,12 @@ endfunction()
 #			)
 #
 #	Input:
+<<<<<<< HEAD
 #		BOARD		: board
+=======
+#		BOARD 		: board
+#		THREADS 	: number of threads for building
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 #
 #	Output:
 #		OUT	: the target list
@@ -349,8 +371,13 @@ endfunction()
 function(px4_os_prebuild_targets)
 	px4_parse_function_args(
 			NAME px4_os_prebuild_targets
+<<<<<<< HEAD
 			ONE_VALUE OUT BOARD
 			REQUIRED OUT
+=======
+			ONE_VALUE OUT BOARD THREADS
+			REQUIRED OUT BOARD
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 			ARGN ${ARGN})
 
 	add_library(prebuild_targets INTERFACE)

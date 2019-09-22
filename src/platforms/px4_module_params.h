@@ -34,7 +34,7 @@
 /**
  * @file px4_module_params.h
  *
- * @class ModuleParams is a C++ base class for modules/classes using configuration parameters.
+ * C++ base class for modules/classes using configuration parameters
  */
 
 #pragma once
@@ -53,8 +53,8 @@ public:
 	}
 
 	/**
-	 * @brief Sets the parent module. This is typically not required,
-	 *         only in cases where the parent cannot be set via constructor.
+	 * Set the parent module. This is typically not required, only in cases where
+	 * the parent cannot be set via constructor.
 	 */
 	void setParent(ModuleParams *parent)
 	{
@@ -65,7 +65,7 @@ public:
 
 	virtual ~ModuleParams() = default;
 
-	// Disallow copy construction and move assignment.
+	// no copy, assignment, move, move assignment
 	ModuleParams(const ModuleParams &) = delete;
 	ModuleParams &operator=(const ModuleParams &) = delete;
 	ModuleParams(ModuleParams &&) = delete;
@@ -73,8 +73,8 @@ public:
 
 protected:
 	/**
-	 * @brief Call this method whenever the module gets a parameter change notification.
-	 *        It will automatically call updateParams() for all children, which then call updateParamsImpl().
+	 * Call this whenever the module gets a parameter change notification. It will automatically
+	 * call updateParams() for all children, which then call updateParamsImpl().
 	 */
 	virtual void updateParams()
 	{
@@ -89,11 +89,10 @@ protected:
 	}
 
 	/**
-	 * @brief The implementation for this is generated with the macro DEFINE_PARAMETERS()
+	 * The implementation for this is generated with the macro DEFINE_PARAMETERS()
 	 */
 	virtual void updateParamsImpl() {}
 
 private:
-	/** @list _children The module parameter list of inheriting classes. */
 	List<ModuleParams *> _children;
 };

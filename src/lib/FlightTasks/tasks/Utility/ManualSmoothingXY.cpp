@@ -199,11 +199,15 @@ void
 ManualSmoothingXY::_velocitySlewRate(Vector2f &vel_sp, const float dt)
 {
 	// Adjust velocity setpoint if demand exceeds acceleration. /
+<<<<<<< HEAD
 	Vector2f acc{};
 
 	if (dt > FLT_EPSILON) {
 		acc = (vel_sp - _vel_sp_prev) / dt;
 	}
+=======
+	matrix::Vector2f acc = (vel_sp - _vel_sp_prev) / dt;
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 	if (acc.length() > _acc_state_dependent) {
 		vel_sp = acc.normalized() * _acc_state_dependent  * dt + _vel_sp_prev;

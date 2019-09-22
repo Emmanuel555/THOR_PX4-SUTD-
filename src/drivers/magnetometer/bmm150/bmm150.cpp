@@ -774,6 +774,24 @@ BMM150::ioctl(struct file *filp, int cmd, unsigned long arg)
 	case MAGIOCEXSTRAP:
 		return OK;
 
+<<<<<<< HEAD
+=======
+	case MAGIOCSELFTEST:
+		return OK;
+
+	case MAGIOCSSAMPLERATE:
+		return ioctl(filp, SENSORIOCSPOLLRATE, arg);
+
+	case MAGIOCGSAMPLERATE:
+		return 1000000 / _call_interval;
+
+	case MAGIOCSRANGE:
+		return OK;
+
+	case MAGIOCGRANGE:
+		return OK;
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	default:
 		/* give it to the superclass */
 		return I2C::ioctl(filp, cmd, arg);

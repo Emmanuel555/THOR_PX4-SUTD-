@@ -12,13 +12,20 @@ sh /etc/init.d/rc.vtol_defaults
 
 if [ $AUTOCNF = yes ]
 then
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/13008_QuadRanger
 	param set FW_THR_CRUISE 65
 	param set FW_PR_P 0.08
 	param set FW_PR_FF 0.5
 	param set FW_RR_P 0.05
 	param set FW_RR_FF 0.6
+=======
+	param set VT_TYPE 2
+	param set VT_MOT_COUNT 4
+	param set VT_F_TRANS_THR 0.75
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/13008_QuadRanger
 
-	param set MIS_YAW_TMT 10
+	param set PWM_AUX_REV1 1
+	param set PWM_AUX_REV2 1
 
 	param set MC_ROLL_P 7
 	param set MC_ROLLRATE_P 0.15
@@ -43,18 +50,31 @@ then
 	param set MPC_TKO_SPEED 1.5
 	param set MPC_LAND_SPEED 0.8
 
-	param set PWM_AUX_DIS5 950
-	param set PWM_AUX_REV1 1
-	param set PWM_AUX_REV2 1
-	param set PWM_RATE 400
+	param set FW_THR_CRUISE 65.0
+	param set FW_PR_P 0.08
+	param set FW_PR_FF 0.5
+	param set FW_RR_P 0.05
+	param set FW_RR_FF 0.6
 
+	param set MIS_YAW_TMT 10
+
+<<<<<<< HEAD:ROMFS/px4fmu_common/init.d/airframes/13008_QuadRanger
 	param set VT_ARSP_TRANS 15
 	param set VT_ARSP_BLEND 8
 	param set VT_B_TRANS_DUR 4
 	param set VT_F_TRANS_THR 0.75
 	param set VT_IDLE_PWM_MC 1080
+=======
+	param set VT_ARSP_TRANS 15.0
+	param set VT_ARSP_BLEND 8.0
+	param set VT_B_TRANS_DUR 4.0
+
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9:ROMFS/px4fmu_common/init.d/13008_QuadRanger
 	param set VT_MOT_COUNT 4
+	param set VT_IDLE_PWM_MC 1080
 	param set VT_TYPE 2
+
+	param set PWM_AUX_DIS5 950
 fi
 
 set MAV_TYPE 22
@@ -63,3 +83,4 @@ set MIXER quad_x
 set MIXER_AUX vtol_AAERT
 
 set PWM_OUT 1234
+set PWM_RATE 400

@@ -115,6 +115,7 @@ def get_msgs_list(msgdir):
     return [fn for fn in os.listdir(msgdir) if fn.endswith(".msg")]
 
 
+<<<<<<< HEAD
 def generate_output_from_file(format_idx, filename, outputdir, package, templatedir, includepath):
     """
     Converts a single .msg file to an uorb header/source file
@@ -188,6 +189,58 @@ def generate_idl_file(filename_msg, outputdir, templatedir, package, includepath
 
     return generate_by_template(output_file, template_file, em_globals)
 
+=======
+def generate_output_from_file(format_idx, filename, outputdir, templatedir, includepath):
+        """
+        Converts a single .msg file to an uorb header/source file
+        """
+        msg_context = genmsg.msg_loader.MsgContext.create_default()
+        full_type_name = genmsg.gentools.compute_full_type_name(PACKAGE, os.path.basename(filename))
+        spec = genmsg.msg_loader.load_msg_from_file(msg_context, filename, full_type_name)
+        topics = get_multi_topics(filename)
+        if includepath:
+                search_path = genmsg.command_line.includepath_to_dict(includepath)
+        else:
+                search_path = {}
+        genmsg.msg_loader.load_depends(msg_context, spec, search_path)
+        md5sum = genmsg.gentools.compute_md5(msg_context, spec)
+        if len(topics) == 0:
+                topics.append(spec.short_name)
+        em_globals = {
+            "file_name_in": filename,
+            "md5sum": md5sum,
+            "search_path": search_path,
+            "msg_context": msg_context,
+            "spec": spec,
+            "topics": topics
+        }
+
+        # Make sure output directory exists:
+        if not os.path.isdir(outputdir):
+                os.makedirs(outputdir)
+
+        template_file = os.path.join(templatedir, TEMPLATE_FILE[format_idx])
+        output_file = os.path.join(outputdir, spec.short_name +
+                OUTPUT_FILE_EXT[format_idx])
+
+        return generate_by_template(output_file, template_file, em_globals)
+
+def generate_idl_file(filename_msg, outputdir, templatedir, includepath):
+        """
+        Generates an .idl from .msg file
+        """
+        em_globals = get_em_globals(filename_msg, includepath, MsgScope.NONE)
+        spec_short_name = em_globals["spec"].short_name
+
+        # Make sure output directory exists:
+        if not os.path.isdir(outputdir):
+                os.makedirs(outputdir)
+
+        template_file = os.path.join(templatedir, IDL_TEMPLATE_FILE)
+        output_file = os.path.join(outputdir, IDL_TEMPLATE_FILE.replace("msg.idl.template", str(spec_short_name + "_.idl")))
+
+        return generate_by_template(output_file, template_file, em_globals)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 
 def generate_uRTPS_general(filename_send_msgs, filename_received_msgs,
                            outputdir, templatedir, package, includepath, ids, template_name):

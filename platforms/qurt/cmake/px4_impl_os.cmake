@@ -156,7 +156,12 @@ endfunction()
 #			)
 #
 #	Input:
+<<<<<<< HEAD
 #		BOARD		: board
+=======
+#		BOARD 		: board
+#		THREADS 	: number of threads for building
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 #
 #	Output:
 #		OUT	: the target list
@@ -167,8 +172,13 @@ endfunction()
 function(px4_os_prebuild_targets)
 	px4_parse_function_args(
 			NAME px4_os_prebuild_targets
+<<<<<<< HEAD
 			ONE_VALUE OUT BOARD
 			REQUIRED OUT
+=======
+			ONE_VALUE OUT BOARD THREADS
+			REQUIRED OUT BOARD
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 			ARGN ${ARGN})
 
 	add_library(prebuild_targets INTERFACE)

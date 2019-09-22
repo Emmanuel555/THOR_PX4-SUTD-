@@ -31,14 +31,26 @@
 #
 ############################################################################
 
-###########################################
-# Prepare flight tasks
-###########################################
-
-# add upstream flight tasks (they are being handled differently from the core inside the python script)
-list(APPEND flight_tasks_to_add
-	Orbit
+px4_add_library(flight_tasks
+tasks/FlightTask.cpp
+		tasks/FlightTaskManual.cpp
+		tasks/FlightTaskManualStabilized.cpp
+		tasks/FlightTaskOrbit.cpp
+		tasks/FlightTaskManualAltitude.cpp
+		tasks/FlightTaskManualAltitudeSmooth.cpp
+		tasks/FlightTaskManualPosition.cpp
+		tasks/FlightTaskManualPositionSmooth.cpp
+		tasks/FlightTaskAuto.cpp
+		tasks/FlightTaskAutoLine.cpp
+		tasks/FlightTaskAutoFollowMe.cpp
+		tasks/FlightTaskOffboard.cpp
+		tasks/Utility/ManualSmoothingZ.cpp
+		tasks/Utility/ManualSmoothingXY.cpp
+		tasks/Utility/StraightLine.cpp
+		SubscriptionArray.cpp
+		FlightTasks.cpp
 )
+<<<<<<< HEAD
 # remove possible duplicates
 list(REMOVE_DUPLICATES flight_tasks_to_add)
 
@@ -118,3 +130,5 @@ endforeach()
 
 # add subdirectory containing all tasks
 add_subdirectory(tasks)
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9

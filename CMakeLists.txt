@@ -138,6 +138,7 @@ include(px4_add_module)
 set(config_module_list)
 set(config_df_driver_list)
 
+<<<<<<< HEAD
 # find PX4 config
 #  look for in tree board config that matches CONFIG input
 if(NOT PX4_CONFIG_FILE)
@@ -224,6 +225,10 @@ else()
 endif()
 
 # external modules
+=======
+set(THREADS "4" CACHE STRING "number of threads to use for external build processes")
+set(DEBUG_PORT "/dev/ttyACM0" CACHE STRING "debugging port")
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 set(EXTERNAL_MODULES_LOCATION "" CACHE STRING "External modules source location")
 
 if (NOT EXTERNAL_MODULES_LOCATION STREQUAL "")
@@ -337,17 +342,46 @@ if (CATKIN_DEVEL_PREFIX)
 endif()
 
 find_package(PythonInterp REQUIRED)
-
-option(PYTHON_COVERAGE "Python code coverage" OFF)
-if(PYTHON_COVERAGE)
-	message(STATUS "python coverage enabled")
-	set(PYTHON_EXECUTABLE coverage run -p)
-else()
-	# run normally (broken under coveragepy)
-	px4_find_python_module(jinja2 REQUIRED)
-endif()
+px4_find_python_module(jinja2 REQUIRED)
 
 #=============================================================================
+<<<<<<< HEAD
+=======
+# check required toolchain variables
+#
+
+set(required_variables CMAKE_C_COMPILER_ID CMAKE_CXX_COMPILER_ID)
+foreach(var ${required_variables})
+	if (NOT ${var})
+		message(FATAL_ERROR "Toolchain/config must define ${var}")
+	endif()
+endforeach()
+
+# print full c compiler version
+execute_process(COMMAND ${CMAKE_C_COMPILER} --version
+		OUTPUT_VARIABLE c_compiler_version
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+STRING(REGEX MATCH "[^\n]*" c_compiler_version_short ${c_compiler_version})
+message(STATUS "C compiler: ${c_compiler_version_short}")
+
+# print full c++ compiler version
+execute_process(COMMAND ${CMAKE_CXX_COMPILER} --version
+		OUTPUT_VARIABLE cxx_compiler_version
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+STRING(REGEX MATCH "[^\n]*" cxx_compiler_version_short ${cxx_compiler_version})
+message(STATUS "C++ compiler: ${cxx_compiler_version_short}")
+
+#=============================================================================
+# external libraries
+#
+px4_os_prebuild_targets(OUT prebuild_targets
+	BOARD ${BOARD}
+	THREADS ${THREADS})
+
+#=============================================================================
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 # build flags
 #
 include(px4_add_common_flags)
@@ -488,6 +522,7 @@ if (BUILD_DOXYGEN)
 endif()
 
 #=============================================================================
+<<<<<<< HEAD
 # Metadata - helpers for generating documentation
 #
 
@@ -537,6 +572,8 @@ add_custom_target(all_metadata
 )
 
 #=============================================================================
+=======
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 # packaging
 #
 # Important to having packaging at end of cmake file.

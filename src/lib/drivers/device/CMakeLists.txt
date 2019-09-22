@@ -32,7 +32,14 @@
 ############################################################################
 
 set(SRCS_PLATFORM)
+<<<<<<< HEAD
 if (${PX4_PLATFORM} STREQUAL "nuttx")
+=======
+if (${OS} STREQUAL "nuttx")
+	list(APPEND SRCS_PLATFORM
+		nuttx/cdev_platform.cpp
+	)
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	if ("${CONFIG_I2C}" STREQUAL "y")
 		list(APPEND SRCS_PLATFORM nuttx/I2C.cpp)
 	endif()
@@ -43,6 +50,8 @@ if (${PX4_PLATFORM} STREQUAL "nuttx")
 else()
 	list(APPEND SRCS_PLATFORM
 		posix/I2C.cpp
+		posix/cdev_platform.cpp
+		posix/vfile.cpp
 	)
 endif()
 
@@ -56,5 +65,3 @@ px4_add_library(drivers__device
 if (${PX4_PLATFORM} STREQUAL "nuttx")
 	target_link_libraries(drivers__device PRIVATE nuttx_arch)
 endif()
-
-target_link_libraries(drivers__device PRIVATE cdev)

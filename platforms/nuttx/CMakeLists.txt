@@ -61,7 +61,6 @@ list(APPEND nuttx_libs
 
 if (CONFIG_NET)
 	list(APPEND nuttx_libs nuttx_net)
-	target_link_libraries(nuttx_fs INTERFACE nuttx_net)
 endif()
 
 file(RELATIVE_PATH PX4_BINARY_DIR_REL ${CMAKE_CURRENT_BINARY_DIR} ${PX4_BINARY_DIR})
@@ -281,10 +280,10 @@ if (BLOATY_PROGRAM)
 endif()
 
 # debugger helpers
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Debug/gdbinit.in ${PX4_BINARY_DIR}/.gdbinit)
+configure_file(gdbinit.in .gdbinit)
 
 add_custom_target(debug
+<<<<<<< HEAD
 	COMMAND ${GDB} -iex 'set auto-load safe-path ${PX4_BINARY_DIR}' $<TARGET_FILE:px4>
 	DEPENDS px4 ${PX4_BINARY_DIR}/.gdbinit
 	WORKING_DIRECTORY ${PX4_BINARY_DIR}
@@ -367,6 +366,10 @@ add_custom_target(jlink_debug
 		$<TARGET_FILE:px4>
 	DEPENDS px4 ${PX4_BINARY_DIR}/.gdbinit
 	WORKING_DIRECTORY ${PX4_BINARY_DIR}
+=======
+	COMMAND ${GDB} $<TARGET_FILE:${FW_NAME}>
+	DEPENDS ${FW_NAME} ${CMAKE_CURRENT_BINARY_DIR}/.gdbinit
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	USES_TERMINAL
 	)
 
@@ -383,9 +386,13 @@ ExternalProject_Add(FlameGraph
 	)
 
 add_custom_target(profile
+<<<<<<< HEAD
 	COMMAND ${CMAKE_COMMAND} -E env PATH="${PX4_BINARY_DIR}/external/Source/FlameGraph:$ENV{PATH}"
 		${CMAKE_CURRENT_SOURCE_DIR}/Debug/poor-mans-profiler.sh --elf=$<TARGET_FILE:px4> --nsamples=10000
 	DEPENDS px4 ${CMAKE_CURRENT_SOURCE_DIR}/Debug/poor-mans-profiler.sh FlameGraph
+=======
+	COMMAND ${CMAKE_COMMAND} -E env PATH="${PX4_BINARY_DIR}/external/Source/FlameGraph:$ENV{PATH}" ${PX4_SOURCE_DIR}/platforms/nuttx/Debug/poor-mans-profiler.sh --elf=$<TARGET_FILE:${FW_NAME}> --nsamples=10000
+	DEPENDS ${FW_NAME} ${PX4_SOURCE_DIR}/platforms/nuttx/Debug/poor-mans-profiler.sh FlameGraph
+>>>>>>> 97f14edcbd3ff8526326d26d749656a8e8f309c9
 	USES_TERMINAL
-	WORKING_DIRECTORY ${PX4_BINARY_DIR}
 	)

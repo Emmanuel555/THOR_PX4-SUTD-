@@ -1,4 +1,3 @@
-uint64 timestamp	# time since system start (microseconds)
 uint32 device_id	# Sensor ID that must be unique for each baro sensor and must not change
 
 uint64 error_count
